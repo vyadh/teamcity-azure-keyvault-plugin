@@ -1,4 +1,3 @@
-
 buildscript {
   repositories {
     mavenLocal()
@@ -18,3 +17,12 @@ group = "com.github.vyadh.teamcity"
 version = "1.0-SNAPSHOT"
 
 extra["teamcityVersion"] = findProperty("teamcity.version") ?: "2018.1.2"
+
+subprojects {
+  tasks.withType<Test> {
+    useJUnitPlatform()
+    testLogging {
+      events("passed", "skipped", "failed")
+    }
+  }
+}

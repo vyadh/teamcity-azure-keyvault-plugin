@@ -11,14 +11,21 @@ apply {
 
 extra["downloadsDir"] = project.findProperty("downloads.dir") ?: "${rootDir}/downloads"
 extra["serversDir"] = project.findProperty("servers.dir") ?: "${rootDir}/servers"
-extra["java7Home"] = project.findProperty("java7.home") ?: "/opt/jdk1.7.0_80"
-extra["java8Home"] = project.findProperty("java8.home") ?: "/opt/jdk1.8.0_92"
 
 val agent = configurations.getByName("agent")
 
 dependencies {
   compile(project(":common"))
   agent(project(path = ":agent", configuration = "plugin"))
+
+  compileOnly("org.jetbrains.teamcity.internal:web:${rootProject.extra["teamcityVersion"]}")
+  testCompile("org.jetbrains.teamcity.internal:web:${rootProject.extra["teamcityVersion"]}")
+
+  testCompile("org.assertj:assertj-core:3.11.1")
+  testCompile("org.junit.jupiter:junit-jupiter-api:5.3.1")
+  testCompile("org.junit.jupiter:junit-jupiter-params:5.3.1")
+  testRuntime("org.junit.jupiter:junit-jupiter-engine:5.3.1")
+  testCompile("org.mockito:mockito-all:1.9.5")
 }
 
 teamcity {
@@ -48,12 +55,10 @@ teamcity {
 
 //    "teamcity2017" {
 //      version = "2017.1"
-//      javaHome = file(extra["java8Home"] as String)
 //    }
 
     "teamcity2018" {
       version = "2018.1.2"
-      javaHome = file(extra["java8Home"] as String)
     }
   }
 }

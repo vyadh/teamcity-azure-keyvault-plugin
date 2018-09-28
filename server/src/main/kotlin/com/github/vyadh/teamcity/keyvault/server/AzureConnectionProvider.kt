@@ -10,7 +10,7 @@ import jetbrains.buildServer.web.openapi.PluginDescriptor
 
 class AzureConnectionProvider(private val descriptor: PluginDescriptor) : OAuthProvider() {
 
-  override fun getType(): String = KeyVaultConstants.TYPE
+  override fun getType(): String = KeyVaultConstants.FEATURE_TYPE
 
   override fun getDisplayName(): String = "Azure Key Vault"
 

@@ -2,7 +2,7 @@ package com.github.vyadh.teamcity.keyvault.common
 
 object KeyVaultConstants {
 
-  @JvmField val TYPE = "teamcity-keyvault"
+  @JvmField val FEATURE_TYPE = "teamcity-keyvault"
 
   @JvmField val TENANT_ID = "tenant-id"
   @JvmField val CLIENT_ID = "client-id"

@@ -3,6 +3,7 @@ package com.github.vyadh.teamcity.keyvault.common
 object KeyVaultConstants {
 
   @JvmField val FEATURE_TYPE = "teamcity-keyvault"
+  @JvmField val VAR_PREFIX = "keyvault:"
 
   @JvmField val TENANT_ID = "tenant-id"
   @JvmField val CLIENT_ID = "client-id"

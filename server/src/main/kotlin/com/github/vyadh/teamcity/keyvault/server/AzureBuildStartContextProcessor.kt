@@ -2,6 +2,7 @@ package com.github.vyadh.teamcity.keyvault.server
 
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultFeatureSettings
+import com.github.vyadh.teamcity.keyvault.common.KeyVaultVariableRefs
 import com.intellij.openapi.diagnostic.Logger
 import jetbrains.buildServer.log.Loggers
 import jetbrains.buildServer.serverSide.BuildStartContext
@@ -23,6 +24,7 @@ class AzureBuildStartContextProcessor(
     if (feature != null && requiresAccessToken(context.build)) {
       val settings = KeyVaultFeatureSettings.fromMap(feature.parameters)
       val token = connector.requestToken(settings)
+      //todo
     } else {
       LOG.debug("No key vault token required for build ${context.build}")
     }
@@ -39,8 +41,7 @@ class AzureBuildStartContextProcessor(
         it.parameters[OAuthConstants.OAUTH_TYPE_PARAM] == KeyVaultConstants.FEATURE_TYPE
 
   private fun requiresAccessToken(build: SRunningBuild): Boolean {
-    //todo
-    return true
+    return KeyVaultVariableRefs.containsVars(build.parametersProvider.all)
   }
 
 }

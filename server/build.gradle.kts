@@ -3,6 +3,7 @@ import com.github.rodm.teamcity.TeamCityPluginExtension
 
 plugins {
   kotlin("jvm")
+  kotlin("kapt")
 }
 
 apply {
@@ -14,12 +15,22 @@ extra["serversDir"] = project.findProperty("servers.dir") ?: "${rootDir}/servers
 
 val agent = configurations.getByName("agent")
 
+repositories {
+  mavenLocal()
+  mavenCentral()
+}
+
 dependencies {
   compile(project(":common"))
   agent(project(path = ":agent", configuration = "plugin"))
 
   compileOnly("org.jetbrains.teamcity.internal:web:${rootProject.extra["teamcityVersion"]}")
   testCompile("org.jetbrains.teamcity.internal:web:${rootProject.extra["teamcityVersion"]}")
+
+  compile("com.squareup.okhttp3:okhttp:3.11.0")
+  testImplementation("com.squareup.okhttp3:mockwebserver:3.11.0")
+  compile("com.squareup.moshi:moshi-kotlin-codegen:1.6.0")
+  kapt("com.squareup.moshi:moshi-kotlin-codegen:1.6.0")
 
   testCompile("org.assertj:assertj-core:3.11.1")
   testCompile("org.junit.jupiter:junit-jupiter-api:5.3.1")

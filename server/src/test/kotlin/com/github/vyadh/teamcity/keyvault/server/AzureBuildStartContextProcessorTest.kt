@@ -21,7 +21,7 @@ internal class AzureBuildStartContextProcessorTest {
   @Test
   fun tokenNotRequestedBuildDoesNotHaveKeyVaultFeature() {
     val context = buildContextWithIrrelevantOAuthFeature()
-    val connector = mock(AzureConnector::class.java)
+    val connector = mock(TokenConnector::class.java)
     val processor = AzureBuildStartContextProcessor(connector)
 
     processor.updateParameters(context)
@@ -35,7 +35,7 @@ internal class AzureBuildStartContextProcessorTest {
           "key" to "some irrelevant %other:secret% message"
     )
     val context = buildContextWithParams(params)
-    val connector = mock(AzureConnector::class.java)
+    val connector = mock(TokenConnector::class.java)
     val processor = AzureBuildStartContextProcessor(connector)
 
     processor.updateParameters(context)
@@ -49,7 +49,7 @@ internal class AzureBuildStartContextProcessorTest {
           "key" to "some relevant %keyvault:secret% message"
     )
     val context = buildContextWithParams(params)
-    val connector = mock(AzureConnector::class.java)
+    val connector = mock(TokenConnector::class.java)
     val processor = AzureBuildStartContextProcessor(connector)
 
     processor.updateParameters(context)
@@ -66,7 +66,7 @@ internal class AzureBuildStartContextProcessorTest {
           featureDescriptor(featureParams),
           parametersProvider(emptyMap())) // No key vault params
 
-    val connector = mock(AzureConnector::class.java)
+    val connector = mock(TokenConnector::class.java)
     val processor = AzureBuildStartContextProcessor(connector)
 
     processor.updateParameters(context)

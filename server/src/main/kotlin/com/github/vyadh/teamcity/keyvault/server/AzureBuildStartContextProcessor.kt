@@ -12,7 +12,8 @@ import jetbrains.buildServer.serverSide.SRunningBuild
 import jetbrains.buildServer.serverSide.oauth.OAuthConstants
 
 class AzureBuildStartContextProcessor(
-      private val connector: AzureConnector) : BuildStartContextProcessor  {
+      private val connector: TokenConnector = AzureTokenConnector()
+) : BuildStartContextProcessor  {
 
   companion object {
     val LOG = Logger.getInstance(

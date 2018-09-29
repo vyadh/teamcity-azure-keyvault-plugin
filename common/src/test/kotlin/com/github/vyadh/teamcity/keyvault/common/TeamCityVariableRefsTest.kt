@@ -1,10 +1,10 @@
 package com.github.vyadh.teamcity.keyvault.common
 
-import com.github.vyadh.teamcity.keyvault.common.KeyVaultVariableRefs.containsVars
+import com.github.vyadh.teamcity.keyvault.common.TeamCityVariableRefs.containsVars
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class KeyVaultVariableRefsTest {
+internal class TeamCityVariableRefsTest {
 
   @Test
   internal fun noReferenceExists() {

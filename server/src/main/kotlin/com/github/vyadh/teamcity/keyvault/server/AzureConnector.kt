@@ -1,9 +1,9 @@
 package com.github.vyadh.teamcity.keyvault.server
 
-import com.github.vyadh.teamcity.keyvault.common.KeyVaultFeatureSettings
+import com.github.vyadh.teamcity.keyvault.common.TokenRequestSettings
 
 interface AzureConnector {
 
-  fun requestToken(settings: KeyVaultFeatureSettings)
+  fun requestToken(settings: TokenRequestSettings)
 
 }

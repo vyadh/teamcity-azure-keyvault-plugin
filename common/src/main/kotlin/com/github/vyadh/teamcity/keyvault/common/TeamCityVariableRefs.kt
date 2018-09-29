@@ -1,6 +1,6 @@
 package com.github.vyadh.teamcity.keyvault.common
 
-object KeyVaultVariableRefs {
+object TeamCityVariableRefs {
 
   private val prefix = "%${KeyVaultConstants.VAR_PREFIX}"
 

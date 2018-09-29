@@ -1,7 +1,7 @@
 package com.github.vyadh.teamcity.keyvault.server
 
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants
-import com.github.vyadh.teamcity.keyvault.common.KeyVaultFeatureSettings
+import com.github.vyadh.teamcity.keyvault.common.TokenRequestSettings
 import jetbrains.buildServer.serverSide.InvalidProperty
 import jetbrains.buildServer.serverSide.PropertiesProcessor
 import jetbrains.buildServer.serverSide.oauth.OAuthConnectionDescriptor
@@ -15,7 +15,7 @@ class AzureConnectionProvider(private val descriptor: PluginDescriptor) : OAuthP
   override fun getDisplayName(): String = "Azure Key Vault"
 
   override fun describeConnection(connection: OAuthConnectionDescriptor): String {
-    val settings = KeyVaultFeatureSettings.fromMap(connection.parameters)
+    val settings = TokenRequestSettings.fromMap(connection.parameters)
     return "Connection to Azure KeyVault server for ${settings.resourceUri}"
   }
 
@@ -46,7 +46,7 @@ class AzureConnectionProvider(private val descriptor: PluginDescriptor) : OAuthP
         else null
       }
 
-      val settings = KeyVaultFeatureSettings.fromMap(properties)
+      val settings = TokenRequestSettings.fromMap(properties)
       properties.putAll(settings.toMap())
 
       return errors.toMutableList()

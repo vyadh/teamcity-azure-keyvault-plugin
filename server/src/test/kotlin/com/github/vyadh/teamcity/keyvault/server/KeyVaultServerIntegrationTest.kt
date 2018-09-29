@@ -1,7 +1,7 @@
 package com.github.vyadh.teamcity.keyvault.server
 
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants
-import com.github.vyadh.teamcity.keyvault.common.KeyVaultFeatureSettings
+import com.github.vyadh.teamcity.keyvault.common.TokenRequestSettings
 import com.github.vyadh.teamcity.keyvault.server.BuildContexts.buildContextWith
 import jetbrains.buildServer.parameters.impl.MapParametersProviderImpl
 import jetbrains.buildServer.serverSide.*
@@ -12,7 +12,7 @@ import org.mockito.Mockito
 
 class KeyVaultServerIntegrationTest {
 
-  private val settings = KeyVaultFeatureSettings(
+  private val settings = TokenRequestSettings(
         "00000001-0001-0001-0001-000000000001",
         "00000002-0002-0002-0002-000000000002",
         "aaaabbbbccccddddeeeeffffgggghhhhiiiijjjj",

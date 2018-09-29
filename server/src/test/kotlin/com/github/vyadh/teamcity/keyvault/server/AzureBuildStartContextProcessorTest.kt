@@ -1,6 +1,6 @@
 package com.github.vyadh.teamcity.keyvault.server
 
-import com.github.vyadh.teamcity.keyvault.common.KeyVaultFeatureSettings
+import com.github.vyadh.teamcity.keyvault.common.TokenRequestSettings
 import com.github.vyadh.teamcity.keyvault.server.BuildContexts.buildContextWithParams
 import com.github.vyadh.teamcity.keyvault.server.BuildContexts.featureParams
 import com.github.vyadh.teamcity.keyvault.server.KotlinMockitoMatchers.any
@@ -50,7 +50,7 @@ internal class AzureBuildStartContextProcessorTest {
 
     processor.updateParameters(context)
 
-    verify(connector).requestToken(KeyVaultFeatureSettings.fromMap(featureParams()))
+    verify(connector).requestToken(TokenRequestSettings.fromMap(featureParams()))
   }
 
   private fun buildContextWithIrrelevantOAuthFeature(): BuildStartContext {

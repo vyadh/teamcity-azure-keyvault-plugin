@@ -4,7 +4,7 @@ import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants.RESOURCE_URI
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class KeyVaultFeatureSettingsTest {
+class TokenRequestSettingsTest {
 
   @Test
   fun symmetricData() {
@@ -14,7 +14,7 @@ class KeyVaultFeatureSettingsTest {
           KeyVaultConstants.CLIENT_SECRET to "cs",
           RESOURCE_URI to "res")
 
-    val resultMap = KeyVaultFeatureSettings.fromMap(map).toMap()
+    val resultMap = TokenRequestSettings.fromMap(map).toMap()
 
     assertThat(resultMap).isEqualTo(map)
   }
@@ -23,7 +23,7 @@ class KeyVaultFeatureSettingsTest {
   fun defaultedToEmptyStrings() {
     val map = emptyMap<String, String>()
 
-    val resultMap = KeyVaultFeatureSettings.fromMap(map).toMap()
+    val resultMap = TokenRequestSettings.fromMap(map).toMap()
 
     assertThat(resultMap).isEqualTo(hashMapOf(
           KeyVaultConstants.TENANT_ID to "",

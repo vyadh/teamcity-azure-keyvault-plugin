@@ -1,8 +1,8 @@
 package com.github.vyadh.teamcity.keyvault.server
 
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants
-import com.github.vyadh.teamcity.keyvault.common.KeyVaultFeatureSettings
-import com.github.vyadh.teamcity.keyvault.common.KeyVaultVariableRefs
+import com.github.vyadh.teamcity.keyvault.common.TokenRequestSettings
+import com.github.vyadh.teamcity.keyvault.common.TeamCityVariableRefs
 import com.intellij.openapi.diagnostic.Logger
 import jetbrains.buildServer.log.Loggers
 import jetbrains.buildServer.serverSide.BuildStartContext
@@ -31,7 +31,7 @@ class AzureBuildStartContextProcessor(
   }
 
   private fun updateParametersWithToken(feature: SProjectFeatureDescriptor) {
-    val settings = KeyVaultFeatureSettings.fromMap(feature.parameters)
+    val settings = TokenRequestSettings.fromMap(feature.parameters)
     val token = connector.requestToken(settings)
     //todo
   }
@@ -47,7 +47,7 @@ class AzureBuildStartContextProcessor(
         it.parameters[OAuthConstants.OAUTH_TYPE_PARAM] == KeyVaultConstants.FEATURE_TYPE
 
   private fun requiresAccessToken(build: SRunningBuild): Boolean {
-    return KeyVaultVariableRefs.containsVars(build.parametersProvider.all)
+    return TeamCityVariableRefs.containsVars(build.parametersProvider.all)
   }
 
 }

@@ -1,12 +1,16 @@
 package com.github.vyadh.teamcity.keyvault.server
 
+import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants
 import com.github.vyadh.teamcity.keyvault.common.TokenRequestSettings
+import com.github.vyadh.teamcity.keyvault.server.BuildContexts.buildContextWith
 import com.github.vyadh.teamcity.keyvault.server.BuildContexts.buildContextWithParams
+import com.github.vyadh.teamcity.keyvault.server.BuildContexts.featureDescriptor
 import com.github.vyadh.teamcity.keyvault.server.BuildContexts.featureParams
+import com.github.vyadh.teamcity.keyvault.server.BuildContexts.featureParamsWith
+import com.github.vyadh.teamcity.keyvault.server.BuildContexts.parametersProvider
 import com.github.vyadh.teamcity.keyvault.server.KotlinMockitoMatchers.any
 import jetbrains.buildServer.parameters.ParametersProvider
 import jetbrains.buildServer.serverSide.BuildStartContext
-import jetbrains.buildServer.serverSide.SProjectFeatureDescriptor
 import jetbrains.buildServer.serverSide.oauth.OAuthConstants
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -53,11 +57,26 @@ internal class AzureBuildStartContextProcessorTest {
     verify(connector).requestToken(TokenRequestSettings.fromMap(featureParams()))
   }
 
+  @Test
+  fun tokenRequestedWhenProvideTokenIsSpecified() {
+    val featureParams = featureParamsWith(
+          KeyVaultConstants.PROVIDE_TOKEN to "true")
+
+    val context = buildContextWith(
+          featureDescriptor(featureParams),
+          parametersProvider(emptyMap())) // No key vault params
+
+    val connector = mock(AzureConnector::class.java)
+    val processor = AzureBuildStartContextProcessor(connector)
+
+    processor.updateParameters(context)
+
+    verify(connector).requestToken(TokenRequestSettings.fromMap(featureParams))
+  }
+
   private fun buildContextWithIrrelevantOAuthFeature(): BuildStartContext {
     val params = mapOf(OAuthConstants.OAUTH_TYPE_PARAM to "irrelevant")
-
-    val descriptor = Mockito.mock(SProjectFeatureDescriptor::class.java)
-    Mockito.`when`(descriptor.parameters).thenReturn(params)
+    val descriptor = featureDescriptor(params)
 
     val paramsProvider = Mockito.mock(ParametersProvider::class.java)
     Mockito.`when`(paramsProvider.all).thenReturn(emptyMap())

@@ -22,7 +22,7 @@ class AzureBuildStartContextProcessor(
   override fun updateParameters(context: BuildStartContext) {
     val feature = findKeyVaultFeature(context)
     if (feature != null) {
-      if (requiresAccessToken(context.build)) {
+      if (requiresAccessToken(feature, context.build)) {
         updateParametersWithToken(feature)
       }
     } else {
@@ -46,8 +46,16 @@ class AzureBuildStartContextProcessor(
   private fun isKeyVaultType(it: SProjectFeatureDescriptor) =
         it.parameters[OAuthConstants.OAUTH_TYPE_PARAM] == KeyVaultConstants.FEATURE_TYPE
 
-  private fun requiresAccessToken(build: SRunningBuild): Boolean {
-    return TeamCityVariableRefs.containsVars(build.parametersProvider.all)
+  private fun requiresAccessToken(
+        feature: SProjectFeatureDescriptor, build: SRunningBuild): Boolean {
+
+    return containsProvideTokenParam(feature) ||
+          TeamCityVariableRefs.containsVars(build.parametersProvider.all)
+  }
+
+  private fun containsProvideTokenParam(feature: SProjectFeatureDescriptor): Boolean {
+    val override = feature.parameters[KeyVaultConstants.PROVIDE_TOKEN]
+    return override?.toBoolean() ?: false
   }
 
 }

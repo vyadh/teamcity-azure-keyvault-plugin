@@ -9,13 +9,22 @@ import org.mockito.Mockito
 object BuildContexts {
 
   internal fun buildContextWithParams(params: Map<String, String>): BuildStartContext {
-    val descriptor = Mockito.mock(SProjectFeatureDescriptor::class.java)
-    Mockito.`when`(descriptor.parameters).thenReturn(featureParams())
-
-    val paramsProvider = Mockito.mock(ParametersProvider::class.java)
-    Mockito.`when`(paramsProvider.all).thenReturn(params)
+    val descriptor = featureDescriptor(featureParams())
+    val paramsProvider = parametersProvider(params)
 
     return buildContextWith(descriptor, paramsProvider)
+  }
+
+  internal fun featureDescriptor(featureParams: Map<String, String>): SProjectFeatureDescriptor {
+    val descriptor = Mockito.mock(SProjectFeatureDescriptor::class.java)
+    Mockito.`when`(descriptor.parameters).thenReturn(featureParams)
+    return descriptor
+  }
+
+  internal fun parametersProvider(params: Map<String, String>): ParametersProvider {
+    val paramsProvider = Mockito.mock(ParametersProvider::class.java)
+    Mockito.`when`(paramsProvider.all).thenReturn(params)
+    return paramsProvider
   }
 
   internal fun featureParams(): Map<String, String> {
@@ -26,6 +35,12 @@ object BuildContexts {
           KeyVaultConstants.CLIENT_SECRET to "c",
           KeyVaultConstants.RESOURCE_URI to "d"
     )
+  }
+
+  internal fun featureParamsWith(pair: Pair<String, String>): Map<String, String> {
+    val params = HashMap(featureParams())
+    params[pair.first] = pair.second
+    return params
   }
 
   internal fun buildContextWith(

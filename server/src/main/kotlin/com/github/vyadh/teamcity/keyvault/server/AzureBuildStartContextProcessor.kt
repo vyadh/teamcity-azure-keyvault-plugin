@@ -37,10 +37,11 @@ class AzureBuildStartContextProcessor(
   }
 
   private fun findKeyVaultFeature(context: BuildStartContext): SProjectFeatureDescriptor? {
-    val project = context.build.buildType?.project ?: return null
+    val project = context.build.buildType?.project
+
     return project
-          .getAvailableFeaturesOfType(OAuthConstants.FEATURE_TYPE)
-          .firstOrNull { isKeyVaultType(it) }
+          ?.getAvailableFeaturesOfType(OAuthConstants.FEATURE_TYPE)
+          ?.firstOrNull { isKeyVaultType(it) }
   }
 
   private fun isKeyVaultType(it: SProjectFeatureDescriptor) =

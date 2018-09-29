@@ -21,13 +21,19 @@ class AzureBuildStartContextProcessor(
 
   override fun updateParameters(context: BuildStartContext) {
     val feature = findKeyVaultFeature(context)
-    if (feature != null && requiresAccessToken(context.build)) {
-      val settings = KeyVaultFeatureSettings.fromMap(feature.parameters)
-      val token = connector.requestToken(settings)
-      //todo
+    if (feature != null) {
+      if (requiresAccessToken(context.build)) {
+        updateParametersWithToken(feature)
+      }
     } else {
       LOG.debug("No key vault token required for build ${context.build}")
     }
+  }
+
+  private fun updateParametersWithToken(feature: SProjectFeatureDescriptor) {
+    val settings = KeyVaultFeatureSettings.fromMap(feature.parameters)
+    val token = connector.requestToken(settings)
+    //todo
   }
 
   private fun findKeyVaultFeature(context: BuildStartContext): SProjectFeatureDescriptor? {

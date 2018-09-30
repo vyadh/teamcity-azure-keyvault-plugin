@@ -10,7 +10,7 @@ buildscript {
 }
 
 plugins {
-  kotlin("jvm") version "1.2.0" apply false
+  kotlin("jvm") version "1.2.71" apply false
 }
 
 group = "com.github.vyadh.teamcity"
@@ -23,6 +23,12 @@ subprojects {
     useJUnitPlatform()
     testLogging {
       events("passed", "skipped", "failed")
+    }
+  }
+
+  tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions {
+      jvmTarget = "1.8"
     }
   }
 }

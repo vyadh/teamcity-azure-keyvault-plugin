@@ -4,8 +4,9 @@ object KeyVaultConstants {
 
   /** Indicates should provide the Azure access token itself to running builds. */
   val PROVIDE_TOKEN_PROPERTY = "teamcity.keyvault.allow_token"
+  //todo not obfuscated if output to log
   /** Property to hold the access token gained from Azure AD. */
-  val ACCESS_TOKEN_PROPERTY = "teamcity.keyvault.access_token"
+  val ACCESS_TOKEN_PROPERTY = "secure:teamcity.keyvault.access_token"
 
   /** Users specify this special variable prefix to obtain KV secrets.
    *  For example: %keyvault:<vault ref>/path% todo finalise format */

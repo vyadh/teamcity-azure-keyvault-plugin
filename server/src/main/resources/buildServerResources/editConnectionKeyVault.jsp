@@ -4,7 +4,7 @@
 <jsp:useBean id="project" type="jetbrains.buildServer.serverSide.SProject" scope="request"/>
 <jsp:useBean id="oauthConnectionBean" type="jetbrains.buildServer.serverSide.oauth.OAuthConnectionBean" scope="request"/>
 <jsp:useBean id="propertiesBean" type="jetbrains.buildServer.serverSide.oauth.OAuthConnectionBean" scope="request"/>
-<jsp:useBean id="keys" class="com.github.vyadh.teamcity.keyvault.common.KeyVaultJspKeys"/>
+<jsp:useBean id="keys" class="com.github.vyadh.teamcity.keyvault.common.AzureTokenJspKeys"/>
 
 <tr>
   <td><label for="displayName">Display name:</label><l:star/></td>

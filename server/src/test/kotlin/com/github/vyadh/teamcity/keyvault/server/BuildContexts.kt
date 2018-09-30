@@ -1,5 +1,6 @@
 package com.github.vyadh.teamcity.keyvault.server
 
+import com.github.vyadh.teamcity.keyvault.common.AzureTokenConstants
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants
 import jetbrains.buildServer.parameters.ParametersProvider
 import jetbrains.buildServer.serverSide.*
@@ -30,10 +31,10 @@ object BuildContexts {
   internal fun featureParams(): Map<String, String> {
     return mapOf(
           OAuthConstants.OAUTH_TYPE_PARAM to KeyVaultConstants.FEATURE_TYPE,
-          KeyVaultConstants.TENANT_ID to "a",
-          KeyVaultConstants.CLIENT_ID to "b",
-          KeyVaultConstants.CLIENT_SECRET to "c",
-          KeyVaultConstants.RESOURCE_URI to "d"
+          AzureTokenConstants.TENANT_ID to "a",
+          AzureTokenConstants.CLIENT_ID to "b",
+          AzureTokenConstants.CLIENT_SECRET to "c",
+          AzureTokenConstants.RESOURCE_URI to "d"
     )
   }
 

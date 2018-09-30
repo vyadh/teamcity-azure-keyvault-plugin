@@ -1,5 +1,6 @@
 package com.github.vyadh.teamcity.keyvault.server
 
+import com.github.vyadh.teamcity.keyvault.common.AzureTokenConstants
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants
 import com.github.vyadh.teamcity.keyvault.common.TokenRequestSettings
 import jetbrains.buildServer.serverSide.InvalidProperty
@@ -20,7 +21,7 @@ class AzureConnectionProvider(private val descriptor: PluginDescriptor) : OAuthP
   }
 
   override fun getDefaultProperties(): Map<String, String> {
-    return mapOf(KeyVaultConstants.RESOURCE_URI to KeyVaultConstants.DEFAULT_RESOURCE_URI
+    return mapOf(AzureTokenConstants.RESOURCE_URI to AzureTokenConstants.DEFAULT_RESOURCE_URI
     )
   }
 
@@ -36,10 +37,10 @@ class AzureConnectionProvider(private val descriptor: PluginDescriptor) : OAuthP
 
     override fun process(properties: MutableMap<String, String>): MutableCollection<InvalidProperty> {
       val keys = listOf(
-            KeyVaultConstants.TENANT_ID,
-            KeyVaultConstants.CLIENT_ID,
-            KeyVaultConstants.CLIENT_SECRET,
-            KeyVaultConstants.RESOURCE_URI)
+            AzureTokenConstants.TENANT_ID,
+            AzureTokenConstants.CLIENT_ID,
+            AzureTokenConstants.CLIENT_SECRET,
+            AzureTokenConstants.RESOURCE_URI)
 
       val errors = keys.mapNotNull {
         if (properties[it].isNullOrBlank()) InvalidProperty(it, "Should not be empty")

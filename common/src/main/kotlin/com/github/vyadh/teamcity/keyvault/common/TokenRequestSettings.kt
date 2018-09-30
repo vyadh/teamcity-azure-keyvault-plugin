@@ -1,9 +1,9 @@
 package com.github.vyadh.teamcity.keyvault.common
 
-import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants.CLIENT_ID
-import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants.CLIENT_SECRET
-import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants.RESOURCE_URI
-import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants.TENANT_ID
+import com.github.vyadh.teamcity.keyvault.common.AzureTokenConstants.CLIENT_ID
+import com.github.vyadh.teamcity.keyvault.common.AzureTokenConstants.CLIENT_SECRET
+import com.github.vyadh.teamcity.keyvault.common.AzureTokenConstants.RESOURCE_URI
+import com.github.vyadh.teamcity.keyvault.common.AzureTokenConstants.TENANT_ID
 
 data class TokenRequestSettings(
       val tenantId: String,

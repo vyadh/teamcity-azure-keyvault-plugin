@@ -1,5 +1,6 @@
 package com.github.vyadh.teamcity.keyvault.server
 
+import com.github.vyadh.teamcity.keyvault.common.AzureTokenConstants
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants
 import jetbrains.buildServer.serverSide.PropertiesProcessor
 import jetbrains.buildServer.web.openapi.PluginDescriptor
@@ -18,10 +19,10 @@ class AzureConnectionProviderTest {
 
     assertThat(mutableMap)
           .containsOnlyKeys(
-                KeyVaultConstants.TENANT_ID,
-                KeyVaultConstants.CLIENT_ID,
-                KeyVaultConstants.CLIENT_SECRET,
-                KeyVaultConstants.RESOURCE_URI
+                AzureTokenConstants.TENANT_ID,
+                AzureTokenConstants.CLIENT_ID,
+                AzureTokenConstants.CLIENT_SECRET,
+                AzureTokenConstants.RESOURCE_URI
           )
           .containsValues("", "", "", "")
   }
@@ -30,10 +31,10 @@ class AzureConnectionProviderTest {
   internal fun populateExistingValues() {
     val processor = propertiesProcessor()
     val mutableMap = hashMapOf(
-          KeyVaultConstants.TENANT_ID to "t",
-          KeyVaultConstants.CLIENT_ID to "cid",
-          KeyVaultConstants.CLIENT_SECRET to "cs",
-          KeyVaultConstants.RESOURCE_URI to "res")
+          AzureTokenConstants.TENANT_ID to "t",
+          AzureTokenConstants.CLIENT_ID to "cid",
+          AzureTokenConstants.CLIENT_SECRET to "cs",
+          AzureTokenConstants.RESOURCE_URI to "res")
     val originalMap = HashMap(mutableMap)
 
     processor.process(mutableMap)

@@ -24,17 +24,23 @@ class AzureBuildStartContextProcessor(
     val feature = findKeyVaultFeature(context)
     if (feature != null) {
       if (requiresAccessToken(feature, context.build)) {
-        updateParametersWithToken(feature)
+        updateParametersWithToken(feature, context)
       }
     } else {
       LOG.debug("No key vault token required for build ${context.build}")
     }
   }
 
-  private fun updateParametersWithToken(feature: SProjectFeatureDescriptor) {
+  private fun updateParametersWithToken(
+        feature: SProjectFeatureDescriptor, context: BuildStartContext) {
+
     val settings = TokenRequestSettings.fromMap(feature.parameters)
+    //todo error handling
     val token = connector.requestToken(settings)
-    //todo
+
+    context.addSharedParameter(
+          KeyVaultConstants.ACCESS_TOKEN_PROPERTY,
+          token.accessToken)
   }
 
   private fun findKeyVaultFeature(context: BuildStartContext): SProjectFeatureDescriptor? {
@@ -56,7 +62,7 @@ class AzureBuildStartContextProcessor(
   }
 
   private fun containsProvideTokenParam(feature: SProjectFeatureDescriptor): Boolean {
-    val override = feature.parameters[KeyVaultConstants.PROVIDE_TOKEN]
+    val override = feature.parameters[KeyVaultConstants.PROVIDE_TOKEN_PROPERTY]
     return override?.toBoolean() ?: false
   }
 

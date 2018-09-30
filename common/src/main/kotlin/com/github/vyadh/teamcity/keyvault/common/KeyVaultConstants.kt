@@ -2,15 +2,17 @@ package com.github.vyadh.teamcity.keyvault.common
 
 object KeyVaultConstants {
 
-  /** Allow associating the KV TeamCity feature with their params. */
-  @JvmField val FEATURE_TYPE = "teamcity-keyvault"
+  /** Indicates should provide the Azure access token itself to running builds. */
+  val PROVIDE_TOKEN_PROPERTY = "teamcity.keyvault.allow_token"
+  /** Property to hold the access token gained from Azure AD. */
+  val ACCESS_TOKEN_PROPERTY = "teamcity.keyvault.access_token"
 
   /** Users specify this special variable prefix to obtain KV secrets.
    *  For example: %keyvault:<vault ref>/path% todo finalise format */
   @JvmField val VAR_PREFIX = "keyvault:"
 
-  /** Provide the Azure access token itself to running builds. */
-  @JvmField val PROVIDE_TOKEN = "teamcity.keyvault.allow_token"
+  /** Allows associating the KV TeamCity feature with the corresponding params. */
+  @JvmField val FEATURE_TYPE = "teamcity-keyvault"
 
   // The following are the parameter keys from KeyVaultJspKeys
 

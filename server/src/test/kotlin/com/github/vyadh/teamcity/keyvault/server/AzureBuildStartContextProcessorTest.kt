@@ -1,6 +1,7 @@
 package com.github.vyadh.teamcity.keyvault.server
 
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants
+import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants.ACCESS_TOKEN_PROPERTY
 import com.github.vyadh.teamcity.keyvault.common.TokenRequestSettings
 import com.github.vyadh.teamcity.keyvault.server.BuildContexts.buildContextWith
 import com.github.vyadh.teamcity.keyvault.server.BuildContexts.buildContextWithParams
@@ -30,7 +31,7 @@ internal class AzureBuildStartContextProcessorTest {
   }
 
   @Test
-  fun tokenNotWhenBuildDoesNotHaveRelevantParameters() {
+  fun tokenNotRequestedWhenBuildDoesNotHaveRelevantParameters() {
     val params = mapOf(
           "key" to "some irrelevant %other:secret% message"
     )
@@ -49,29 +50,37 @@ internal class AzureBuildStartContextProcessorTest {
           "key" to "some relevant %keyvault:secret% message"
     )
     val context = buildContextWithParams(params)
-    val connector = mock(TokenConnector::class.java)
+    val connector = tokenConnectorWithResponse("param-secret-token")
     val processor = AzureBuildStartContextProcessor(connector)
 
     processor.updateParameters(context)
 
     verify(connector).requestToken(TokenRequestSettings.fromMap(featureParams()))
+    verify(context).addSharedParameter(ACCESS_TOKEN_PROPERTY, "param-secret-token")
   }
 
   @Test
   fun tokenRequestedWhenProvideTokenIsSpecified() {
     val featureParams = featureParamsWith(
-          KeyVaultConstants.PROVIDE_TOKEN to "true")
+          KeyVaultConstants.PROVIDE_TOKEN_PROPERTY to "true")
 
     val context = buildContextWith(
           featureDescriptor(featureParams),
           parametersProvider(emptyMap())) // No key vault params
 
-    val connector = mock(TokenConnector::class.java)
+    val connector = tokenConnectorWithResponse("provide-secret-token")
     val processor = AzureBuildStartContextProcessor(connector)
 
     processor.updateParameters(context)
 
     verify(connector).requestToken(TokenRequestSettings.fromMap(featureParams))
+    verify(context).addSharedParameter(ACCESS_TOKEN_PROPERTY, "provide-secret-token")
+  }
+
+  private fun tokenConnectorWithResponse(accessToken: String): TokenConnector {
+    val connector = mock(TokenConnector::class.java)
+    `when`(connector.requestToken(any())).thenReturn(TokenResponse(accessToken))
+    return connector
   }
 
   private fun buildContextWithIrrelevantOAuthFeature(): BuildStartContext {

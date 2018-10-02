@@ -58,7 +58,7 @@ class AzureBuildStartContextProcessor(
         feature: SProjectFeatureDescriptor, build: SRunningBuild): Boolean {
 
     return containsProvideTokenParam(feature) ||
-          TeamCityVariableRefs.containsVars(build.parametersProvider.all)
+          TeamCityVariableRefs.containsRef(build.parametersProvider.all)
   }
 
   private fun containsProvideTokenParam(feature: SProjectFeatureDescriptor): Boolean {

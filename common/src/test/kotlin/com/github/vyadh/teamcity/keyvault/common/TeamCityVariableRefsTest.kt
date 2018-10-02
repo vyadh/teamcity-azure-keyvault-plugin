@@ -1,28 +1,44 @@
 package com.github.vyadh.teamcity.keyvault.common
 
-import com.github.vyadh.teamcity.keyvault.common.TeamCityVariableRefs.containsVars
+import com.github.vyadh.teamcity.keyvault.common.TeamCityVariableRefs.containsRef
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.util.stream.Stream
 
 internal class TeamCityVariableRefsTest {
 
   @Test
   internal fun noReferenceExists() {
-    assertThat(containsVars(emptyMap())).isFalse()
-    assertThat(containsVars(mapOf("key" to "value"))).isFalse()
+    assertThat(containsRef(emptyMap())).isFalse()
+    assertThat(containsRef(mapOf("key" to "value"))).isFalse()
   }
 
   @Test
   internal fun irrelevantReferenceAreIgnored() {
-    assertThat(containsVars(mapOf("key" to "%var%"))).isFalse()
-    assertThat(containsVars(mapOf("key" to "Pan %var% Gargleblaster"))).isFalse()
-    assertThat(containsVars(mapOf("key" to "Never lose your %key:object%"))).isFalse()
+    assertThat(containsRef(mapOf("key" to "%var%"))).isFalse()
+    assertThat(containsRef(mapOf("key" to "Pan %var% Gargleblaster"))).isFalse()
+    assertThat(containsRef(mapOf("key" to "Never lose your %key:object%"))).isFalse()
   }
 
   @Test
   internal fun keyVaultReferenceExists() {
-    assertThat(containsVars(mapOf("key" to "%keyvault:%"))).isTrue()
-    assertThat(containsVars(mapOf("key" to "The answer is a %keyvault:number%..."))).isTrue()
+    assertThat(containsRef(mapOf("key" to "%keyvault:%"))).isTrue()
+    assertThat(containsRef(mapOf("key" to "The answer is a %keyvault:number%..."))).isTrue()
   }
 
+  @Test
+  internal fun search() {
+    val paramValues = Stream.of(
+          "a) %keyvault:storeA/path1%, b) %keyvault:storeA/path2%",
+          "c) %keyvault:storeB/path%"
+    )
+
+    val refs = TeamCityVariableRefs.searchRefs(paramValues)
+
+    assertThat(refs).containsOnly(
+          "keyvault:storeA/path1",
+          "keyvault:storeA/path2",
+          "keyvault:storeB/path"
+    )
+  }
 }

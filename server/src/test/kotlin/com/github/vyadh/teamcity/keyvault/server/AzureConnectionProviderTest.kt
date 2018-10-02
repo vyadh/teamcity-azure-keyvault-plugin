@@ -1,7 +1,6 @@
 package com.github.vyadh.teamcity.keyvault.server
 
 import com.github.vyadh.teamcity.keyvault.common.AzureTokenConstants
-import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants
 import jetbrains.buildServer.serverSide.PropertiesProcessor
 import jetbrains.buildServer.web.openapi.PluginDescriptor
 import org.assertj.core.api.Assertions.assertThat

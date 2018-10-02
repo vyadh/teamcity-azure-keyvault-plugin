@@ -3,7 +3,7 @@ package com.github.vyadh.teamcity.keyvault.common
 import jetbrains.buildServer.parameters.ReferencesResolverUtil
 import java.util.stream.Stream
 
-object TeamCityVariableRefs {
+object KeyVaultRefs {
 
   private val prefix = "%${KeyVaultConstants.VAR_PREFIX}"
 

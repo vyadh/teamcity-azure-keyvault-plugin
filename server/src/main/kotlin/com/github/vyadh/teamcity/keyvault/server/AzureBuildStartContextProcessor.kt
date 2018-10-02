@@ -2,7 +2,7 @@ package com.github.vyadh.teamcity.keyvault.server
 
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants
 import com.github.vyadh.teamcity.keyvault.common.TokenRequestSettings
-import com.github.vyadh.teamcity.keyvault.common.TeamCityVariableRefs
+import com.github.vyadh.teamcity.keyvault.common.KeyVaultRefs
 import com.intellij.openapi.diagnostic.Logger
 import jetbrains.buildServer.log.Loggers
 import jetbrains.buildServer.serverSide.BuildStartContext
@@ -58,7 +58,7 @@ class AzureBuildStartContextProcessor(
         feature: SProjectFeatureDescriptor, build: SRunningBuild): Boolean {
 
     return containsProvideTokenParam(feature) ||
-          TeamCityVariableRefs.containsRef(build.parametersProvider.all)
+          KeyVaultRefs.containsRef(build.parametersProvider.all)
   }
 
   private fun containsProvideTokenParam(feature: SProjectFeatureDescriptor): Boolean {

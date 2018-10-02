@@ -1,11 +1,11 @@
 package com.github.vyadh.teamcity.keyvault.common
 
-import com.github.vyadh.teamcity.keyvault.common.TeamCityVariableRefs.containsRef
+import com.github.vyadh.teamcity.keyvault.common.KeyVaultRefs.containsRef
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.util.stream.Stream
 
-internal class TeamCityVariableRefsTest {
+internal class KeyVaultRefsTest {
 
   @Test
   internal fun noReferenceExists() {
@@ -33,7 +33,7 @@ internal class TeamCityVariableRefsTest {
           "c) %keyvault:storeB/name% and that's all"
     )
 
-    val refs = TeamCityVariableRefs.searchRefs(paramValues)
+    val refs = KeyVaultRefs.searchRefs(paramValues)
 
     assertThat(refs).containsExactly(
           "keyvault:storeA/name1",
@@ -51,7 +51,7 @@ internal class TeamCityVariableRefsTest {
           "d) %keyvault:storeB/name%"
     )
 
-    val refs = TeamCityVariableRefs.searchRefs(paramValues)
+    val refs = KeyVaultRefs.searchRefs(paramValues)
 
     assertThat(refs).containsExactly(
           "keyvault:storeA/name",
@@ -67,7 +67,7 @@ internal class TeamCityVariableRefsTest {
           "b) %keyvault:storeA/name1%"
     )
 
-    val refs = TeamCityVariableRefs.searchRefs(paramValues)
+    val refs = KeyVaultRefs.searchRefs(paramValues)
 
     assertThat(refs).containsExactly(
           "keyvault:storeA/name1",

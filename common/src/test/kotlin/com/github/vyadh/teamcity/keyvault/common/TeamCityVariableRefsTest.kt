@@ -27,15 +27,49 @@ internal class TeamCityVariableRefsTest {
   }
 
   @Test
-  internal fun search() {
+  internal fun searchExtractsReferences() {
     val paramValues = Stream.of(
           "a) %keyvault:storeA/path1%, b) %keyvault:storeA/path2%",
-          "c) %keyvault:storeB/path%"
+          "c) %keyvault:storeB/path% and that's all"
     )
 
     val refs = TeamCityVariableRefs.searchRefs(paramValues)
 
-    assertThat(refs).containsOnly(
+    assertThat(refs).containsExactly(
+          "keyvault:storeA/path1",
+          "keyvault:storeA/path2",
+          "keyvault:storeB/path"
+    )
+  }
+
+  @Test
+  internal fun searchRemovesDuplicates() {
+    val paramValues = Stream.of(
+          "a) %keyvault:storeA/path%",
+          "b) %keyvault:storeA/path%",
+          "c) %keyvault:storeB/path%",
+          "d) %keyvault:storeB/path%"
+    )
+
+    val refs = TeamCityVariableRefs.searchRefs(paramValues)
+
+    assertThat(refs).containsExactly(
+          "keyvault:storeA/path",
+          "keyvault:storeB/path"
+    )
+  }
+
+  @Test
+  internal fun searchSortsItemsForPossiblyMoreEfficientQueries() {
+    val paramValues = Stream.of(
+          "a) %keyvault:storeA/path2%",
+          "c) %keyvault:storeB/path%",
+          "b) %keyvault:storeA/path1%"
+    )
+
+    val refs = TeamCityVariableRefs.searchRefs(paramValues)
+
+    assertThat(refs).containsExactly(
           "keyvault:storeA/path1",
           "keyvault:storeA/path2",
           "keyvault:storeB/path"

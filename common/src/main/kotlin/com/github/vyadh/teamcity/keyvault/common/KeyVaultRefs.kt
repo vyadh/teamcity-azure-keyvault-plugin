@@ -11,7 +11,7 @@ object KeyVaultRefs {
     return map.values.any { it.contains(prefix) }
   }
 
-  fun searchRefs(paramValues: Stream<String>): Stream<String> {
+  fun searchRefs(paramValues: Stream<String>): Stream<KeyVaultRef> {
     val prefixes = arrayOf(KeyVaultConstants.VAR_PREFIX)
 
     return paramValues
@@ -19,6 +19,7 @@ object KeyVaultRefs {
           .flatMap { value -> references(value, prefixes) }
           .distinct()
           .sorted()
+          .map(::KeyVaultRef)
   }
 
   private fun references(value: String, prefixes: Array<String>) =

@@ -36,9 +36,9 @@ internal class KeyVaultRefsTest {
     val refs = KeyVaultRefs.searchRefs(paramValues)
 
     assertThat(refs).containsExactly(
-          "keyvault:storeA/name1",
-          "keyvault:storeA/name2",
-          "keyvault:storeB/name"
+          KeyVaultRef("keyvault:storeA/name1"),
+          KeyVaultRef("keyvault:storeA/name2"),
+          KeyVaultRef("keyvault:storeB/name")
     )
   }
 
@@ -54,8 +54,8 @@ internal class KeyVaultRefsTest {
     val refs = KeyVaultRefs.searchRefs(paramValues)
 
     assertThat(refs).containsExactly(
-          "keyvault:storeA/name",
-          "keyvault:storeB/name"
+          KeyVaultRef("keyvault:storeA/name"),
+          KeyVaultRef("keyvault:storeB/name")
     )
   }
 
@@ -70,9 +70,9 @@ internal class KeyVaultRefsTest {
     val refs = KeyVaultRefs.searchRefs(paramValues)
 
     assertThat(refs).containsExactly(
-          "keyvault:storeA/name1",
-          "keyvault:storeA/name2",
-          "keyvault:storeB/name"
+          KeyVaultRef("keyvault:storeA/name1"),
+          KeyVaultRef("keyvault:storeA/name2"),
+          KeyVaultRef("keyvault:storeB/name")
     )
   }
 }

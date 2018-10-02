@@ -29,50 +29,50 @@ internal class TeamCityVariableRefsTest {
   @Test
   internal fun searchExtractsReferences() {
     val paramValues = Stream.of(
-          "a) %keyvault:storeA/path1%, b) %keyvault:storeA/path2%",
-          "c) %keyvault:storeB/path% and that's all"
+          "a) %keyvault:storeA/name1%, b) %keyvault:storeA/name2%",
+          "c) %keyvault:storeB/name% and that's all"
     )
 
     val refs = TeamCityVariableRefs.searchRefs(paramValues)
 
     assertThat(refs).containsExactly(
-          "keyvault:storeA/path1",
-          "keyvault:storeA/path2",
-          "keyvault:storeB/path"
+          "keyvault:storeA/name1",
+          "keyvault:storeA/name2",
+          "keyvault:storeB/name"
     )
   }
 
   @Test
   internal fun searchRemovesDuplicates() {
     val paramValues = Stream.of(
-          "a) %keyvault:storeA/path%",
-          "b) %keyvault:storeA/path%",
-          "c) %keyvault:storeB/path%",
-          "d) %keyvault:storeB/path%"
+          "a) %keyvault:storeA/name%",
+          "b) %keyvault:storeA/name%",
+          "c) %keyvault:storeB/name%",
+          "d) %keyvault:storeB/name%"
     )
 
     val refs = TeamCityVariableRefs.searchRefs(paramValues)
 
     assertThat(refs).containsExactly(
-          "keyvault:storeA/path",
-          "keyvault:storeB/path"
+          "keyvault:storeA/name",
+          "keyvault:storeB/name"
     )
   }
 
   @Test
   internal fun searchSortsItemsForPossiblyMoreEfficientQueries() {
     val paramValues = Stream.of(
-          "a) %keyvault:storeA/path2%",
-          "c) %keyvault:storeB/path%",
-          "b) %keyvault:storeA/path1%"
+          "a) %keyvault:storeA/name2%",
+          "c) %keyvault:storeB/name%",
+          "b) %keyvault:storeA/name1%"
     )
 
     val refs = TeamCityVariableRefs.searchRefs(paramValues)
 
     assertThat(refs).containsExactly(
-          "keyvault:storeA/path1",
-          "keyvault:storeA/path2",
-          "keyvault:storeB/path"
+          "keyvault:storeA/name1",
+          "keyvault:storeA/name2",
+          "keyvault:storeB/name"
     )
   }
 }

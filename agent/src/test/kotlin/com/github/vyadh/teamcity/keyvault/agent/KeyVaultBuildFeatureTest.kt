@@ -1,10 +1,13 @@
 package com.github.vyadh.teamcity.keyvault.agent
 
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants
+import com.github.vyadh.teamcity.keyvault.common.KeyVaultRef
 import jetbrains.buildServer.agent.AgentLifeCycleListener
 import jetbrains.buildServer.agent.AgentRunningBuild
+import jetbrains.buildServer.agent.BuildParametersMap
 import jetbrains.buildServer.util.EventDispatcher
 import jetbrains.buildServer.util.PasswordReplacer
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
@@ -43,6 +46,25 @@ internal class KeyVaultBuildFeatureTest {
     feature.buildStarted(build)
 
     verify(build.passwordReplacer).addPassword("my-access-token")
+  }
+
+  @Test
+  internal fun allReferencesPresent() {
+    val build = Mockito.mock(AgentRunningBuild::class.java)
+    `when`(build.sharedConfigParameters)
+          .thenReturn(mapOf("a" to "%keyvault:myvault1/keyname%"))
+
+    val paramMap = Mockito.mock(BuildParametersMap::class.java)
+    `when`(paramMap.allParameters)
+          .thenReturn(mapOf("b" to "%keyvault:myvault2/keyname%"))
+    `when`(build.sharedBuildParameters).thenReturn(paramMap)
+
+    val refs = buildFeature().allReferences(build)
+
+    assertThat(refs).containsOnly(
+          KeyVaultRef("keyvault:myvault1/keyname"),
+          KeyVaultRef("keyvault:myvault2/keyname")
+    )
   }
 
   @Suppress("UNCHECKED_CAST")

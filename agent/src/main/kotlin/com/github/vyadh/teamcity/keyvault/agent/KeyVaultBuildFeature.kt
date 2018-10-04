@@ -9,6 +9,7 @@ import jetbrains.buildServer.agent.AgentLifeCycleListener
 import jetbrains.buildServer.agent.AgentRunningBuild
 import jetbrains.buildServer.log.Loggers
 import jetbrains.buildServer.util.EventDispatcher
+import java.util.stream.Collectors
 import java.util.stream.Stream
 
 class KeyVaultBuildFeature(
@@ -31,7 +32,6 @@ class KeyVaultBuildFeature(
     val refs = allReferences(build)
     val secretByRef = fetchSecrets(refs, token)
 
-    //todo fetch secrets from KeyVault
     //todo populate secrets as parameters
     //todo add fetched values as passwords
   }
@@ -46,7 +46,7 @@ class KeyVaultBuildFeature(
     build.passwordReplacer.addPassword(token)
 
     // Do not allow using the token directly (for now)
-    build.addSharedConfigParameter(KeyVaultConstants.ACCESS_TOKEN_PROPERTY, "(obfuscated)")
+    build.addSharedConfigParameter(KeyVaultConstants.ACCESS_TOKEN_PROPERTY, "(redacted)")
 
     return token
   }
@@ -61,7 +61,15 @@ class KeyVaultBuildFeature(
   }
 
   private fun fetchSecrets(refs: Stream<KeyVaultRef>, token: String?): Map<KeyVaultRef, String> {
-    return emptyMap()
+    if (token == null) {
+      //todo log
+      return emptyMap()
+    }
+
+    return refs.collect(Collectors.toMap(
+          { it },
+          { connector.requestValue(it, token).value }
+    ))
   }
 
 }

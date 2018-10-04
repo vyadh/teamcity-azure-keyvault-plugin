@@ -10,7 +10,7 @@ class AzureTokenConnector(
       private val baseUrl: String = defaultBaseUrl) : TokenConnector {
 
   companion object {
-    val defaultBaseUrl = "https://login.microsoftonline.com/"
+    const val defaultBaseUrl = "https://login.microsoftonline.com/"
     val client = OkHttpClient()
   }
 
@@ -25,8 +25,8 @@ class AzureTokenConnector(
           .build()
 
     val request = Request.Builder()
-          .url(endpoint)
           .post(form)
+          .url(endpoint)
           .header("Accept", "application/json")
           .build()
 

@@ -42,9 +42,9 @@ class AzureTokenConnectorTest {
     val connector = AzureTokenConnector(baseUrl())
 
     server.enqueue(MockResponse().setBody(tokenResponse))
-    val token = connector.requestToken(settings)
+    val response = connector.requestToken(settings)
 
-    assertThat(token.accessToken).isEqualTo(accessToken)
+    assertThat(response.accessToken).isEqualTo(accessToken)
   }
 
   //todo test possible error responses

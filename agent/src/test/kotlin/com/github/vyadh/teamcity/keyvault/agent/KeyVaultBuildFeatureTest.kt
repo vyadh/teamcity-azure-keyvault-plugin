@@ -50,38 +50,56 @@ internal class KeyVaultBuildFeatureTest {
 
   @Test
   internal fun allReferencesPresent() {
-    val build = Mockito.mock(AgentRunningBuild::class.java)
-    `when`(build.sharedConfigParameters)
-          .thenReturn(mapOf("a" to "%keyvault:myvault1/keyname%"))
-
-    val paramMap = Mockito.mock(BuildParametersMap::class.java)
-    `when`(paramMap.allParameters)
-          .thenReturn(mapOf("b" to "%keyvault:myvault2/keyname%"))
-    `when`(build.sharedBuildParameters).thenReturn(paramMap)
+    val build = buildWithParams(
+          mapOf(
+                "config1" to "%keyvault:myvault1/keyname1%",
+                "config2" to "%keyvault:myvault2/keyname1%"
+          ),
+          mapOf(
+                "build1" to "%keyvault:myvault1/keyname2%",
+                "build2" to "%keyvault:myvault2/keyname2%"
+          )
+    )
 
     val refs = buildFeature().allReferences(build)
 
     assertThat(refs).containsOnly(
-          KeyVaultRef("keyvault:myvault1/keyname"),
-          KeyVaultRef("keyvault:myvault2/keyname")
+          KeyVaultRef("keyvault:myvault1/keyname1"),
+          KeyVaultRef("keyvault:myvault1/keyname2"),
+          KeyVaultRef("keyvault:myvault2/keyname1"),
+          KeyVaultRef("keyvault:myvault2/keyname2")
     )
   }
 
   @Suppress("UNCHECKED_CAST")
   private fun buildFeature(): KeyVaultBuildFeature {
     val dispatcher = Mockito.mock(EventDispatcher::class.java) as EventDispatcher<AgentLifeCycleListener>
-    return KeyVaultBuildFeature(dispatcher)
+    val connector = Mockito.mock(KeyVaultConnector::class.java)
+    return KeyVaultBuildFeature(dispatcher, connector)
   }
 
   private fun buildWithToken(token: String): AgentRunningBuild {
-    val build = Mockito.mock(AgentRunningBuild::class.java)
-
-    `when`(build.sharedConfigParameters).thenReturn(
-          mapOf(KeyVaultConstants.ACCESS_TOKEN_PROPERTY to token))
+    val build = buildWithParams(
+          mapOf(KeyVaultConstants.ACCESS_TOKEN_PROPERTY to token),
+          emptyMap())
 
     val passwordReplacer = Mockito.mock(PasswordReplacer::class.java)
     `when`(build.passwordReplacer).thenReturn(passwordReplacer)
 
+    return build
+  }
+
+  private fun buildWithParams(
+        configParams: Map<String, String>,
+        buildParams: Map<String, String>
+  ): AgentRunningBuild {
+
+    val paramMap = Mockito.mock(BuildParametersMap::class.java)
+    `when`(paramMap.allParameters).thenReturn(buildParams)
+
+    val build = Mockito.mock(AgentRunningBuild::class.java)
+    `when`(build.sharedBuildParameters).thenReturn(paramMap)
+    `when`(build.sharedConfigParameters).thenReturn(configParams)
     return build
   }
 

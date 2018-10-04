@@ -12,7 +12,9 @@ import jetbrains.buildServer.util.EventDispatcher
 import java.util.stream.Stream
 
 class KeyVaultBuildFeature(
-      dispatcher: EventDispatcher<AgentLifeCycleListener>) : AgentLifeCycleAdapter() {
+      dispatcher: EventDispatcher<AgentLifeCycleListener>,
+      private val connector: KeyVaultConnector = AzureKeyVaultConnector())
+  : AgentLifeCycleAdapter() {
 
   companion object {
     val LOG = Logger.getInstance(
@@ -26,7 +28,12 @@ class KeyVaultBuildFeature(
 
   override fun buildStarted(build: AgentRunningBuild) {
     val token = consumeToken(build)
-    val refs = token
+    val refs = allReferences(build)
+    val secretByRef = fetchSecrets(refs, token)
+
+    //todo fetch secrets from KeyVault
+    //todo populate secrets as parameters
+    //todo add fetched values as passwords
   }
 
   private fun consumeToken(build: AgentRunningBuild): String? {
@@ -51,6 +58,10 @@ class KeyVaultBuildFeature(
     )
 
     return KeyVaultRefs.searchRefs(paramValues)
+  }
+
+  private fun fetchSecrets(refs: Stream<KeyVaultRef>, token: String?): Map<KeyVaultRef, String> {
+    return emptyMap()
   }
 
 }

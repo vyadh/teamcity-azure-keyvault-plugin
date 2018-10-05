@@ -15,7 +15,7 @@ import org.mockito.Mockito.*
 
 internal class KeyVaultBuildFeatureTest {
 
-  private val accessToken = "secret-value-123"
+  private val accessToken = "access-token-123"
 
   @Test
   internal fun alwaysActivatePlugin() {
@@ -88,6 +88,28 @@ internal class KeyVaultBuildFeatureTest {
     verify(connector).requestValue(buildRef, accessToken)
   }
 
+  @Test
+  internal fun secretsAreAddedAsPasswordsToObfuscate() {
+    val connector = connector(
+          "keyvault:vaultA/keyA1" to "secretA1",
+          "keyvault:vaultB/keyB1" to "secretB1",
+          "keyvault:vaultB/keyB2" to "secretB2"
+    )
+    val configRef = mapOf(
+          "a" to " %keyvault:vaultA/keyA1% ",
+          "b" to " %keyvault:vaultB/keyB1% ",
+          "c" to " %keyvault:vaultB/keyB2% "
+    )
+    val passwords = Mockito.mock(PasswordReplacer::class.java)
+    val build = build(buildParams = configRef, passwordReplacer = passwords)
+
+    buildFeature(connector).buildStarted(build)
+
+    verify(passwords).addPassword("secretA1")
+    verify(passwords).addPassword("secretB1")
+    verify(passwords).addPassword("secretB2")
+  }
+
   @Suppress("UNCHECKED_CAST")
   private fun buildFeature(connector: KeyVaultConnector = connector())
         : KeyVaultBuildFeature {
@@ -97,7 +119,8 @@ internal class KeyVaultBuildFeatureTest {
 
   private fun build(
         configParams: Map<String, String> = emptyMap(),
-        buildParams: Map<String, String> = emptyMap()
+        buildParams: Map<String, String> = emptyMap(),
+        passwordReplacer: PasswordReplacer = Mockito.mock(PasswordReplacer::class.java)
   ): AgentRunningBuild {
 
     val configAndTokenParams = configParams
@@ -110,7 +133,6 @@ internal class KeyVaultBuildFeatureTest {
     `when`(build.sharedBuildParameters).thenReturn(paramMap)
     `when`(build.sharedConfigParameters).thenReturn(configAndTokenParams)
 
-    val passwordReplacer = Mockito.mock(PasswordReplacer::class.java)
     `when`(build.passwordReplacer).thenReturn(passwordReplacer)
 
     return build
@@ -120,6 +142,16 @@ internal class KeyVaultBuildFeatureTest {
     val connector = Mockito.mock(KeyVaultConnector::class.java)
     `when`(connector.requestValue(any(), any()))
           .thenReturn(SecretResponse(""))
+    return connector
+  }
+
+  private fun connector(vararg pairs: Pair<String, String>): KeyVaultConnector {
+    val connector = Mockito.mock(KeyVaultConnector::class.java)
+    for (pair in pairs) {
+      val (ref, secret) = pair
+      `when`(connector.requestValue(KeyVaultRef(ref), accessToken))
+            .thenReturn(SecretResponse(secret))
+    }
     return connector
   }
 

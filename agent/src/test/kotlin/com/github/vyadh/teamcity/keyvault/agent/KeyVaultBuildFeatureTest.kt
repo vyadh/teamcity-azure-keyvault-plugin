@@ -96,9 +96,9 @@ internal class KeyVaultBuildFeatureTest {
           "keyvault:vaultB/keyB2" to "secretB2"
     )
     val configRef = mapOf(
-          "a" to " %keyvault:vaultA/keyA1% ",
-          "b" to " %keyvault:vaultB/keyB1% ",
-          "c" to " %keyvault:vaultB/keyB2% "
+          "usage-a" to " %keyvault:vaultA/keyA1% ",
+          "usage-b" to " %keyvault:vaultB/keyB1% ",
+          "usage-c" to " %keyvault:vaultB/keyB2% "
     )
     val passwords = Mockito.mock(PasswordReplacer::class.java)
     val build = build(buildParams = configRef, passwordReplacer = passwords)
@@ -108,6 +108,27 @@ internal class KeyVaultBuildFeatureTest {
     verify(passwords).addPassword("secretA1")
     verify(passwords).addPassword("secretB1")
     verify(passwords).addPassword("secretB2")
+  }
+
+  @Test
+  internal fun secretsAreAddedAsBuildParameters() {
+    val connector = connector(
+          "keyvault:vault/keyA" to "secretA",
+          "keyvault:vault/keyB" to "secretB",
+          "keyvault:vault/keyC" to "secretC"
+    )
+    val configRef = mapOf(
+          "usage-a" to " %keyvault:vault/keyA% ",
+          "usage-b" to " %keyvault:vault/keyB% ",
+          "usage-c" to " %keyvault:vault/keyC% "
+    )
+    val build = build(buildParams = configRef)
+
+    buildFeature(connector).buildStarted(build)
+
+    verify(build).addSharedConfigParameter("keyvault:vault/keyA", "secretA")
+    verify(build).addSharedConfigParameter("keyvault:vault/keyB", "secretB")
+    verify(build).addSharedConfigParameter("keyvault:vault/keyC", "secretC")
   }
 
   @Suppress("UNCHECKED_CAST")

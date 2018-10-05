@@ -32,8 +32,7 @@ class KeyVaultBuildFeature(
     val refs = allReferences(build)
     val secretByRef = fetchSecrets(refs, token)
     obfuscatePasswords(secretByRef, build)
-
-    //todo populate secrets as parameters
+    populateBuildSecrets(secretByRef, build)
   }
 
   private fun consumeToken(build: AgentRunningBuild): String? {
@@ -74,6 +73,12 @@ class KeyVaultBuildFeature(
 
   private fun obfuscatePasswords(secretByRef: Map<KeyVaultRef, String>, build: AgentRunningBuild) {
     secretByRef.values.forEach { build.passwordReplacer.addPassword(it) }
+  }
+
+  private fun populateBuildSecrets(secretsByRef: Map<KeyVaultRef, String>, build: AgentRunningBuild) {
+    for ((ref, secret) in secretsByRef) {
+      build.addSharedConfigParameter(ref.ref, secret)
+    }
   }
 
 }

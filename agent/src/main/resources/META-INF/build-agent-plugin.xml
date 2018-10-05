@@ -4,6 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
        default-autowire="constructor">
 
-  <bean id="keyVaultBuildFeature" class="com.github.vyadh.teamcity.keyvault.agent.KeyVaultBuildFeature"/>
+  <bean id="keyVaultConnector" class="com.github.vyadh.teamcity.keyvault.agent.AzureKeyVaultConnector"/>
+  <bean id="keyVaultBuildFeature" class="com.github.vyadh.teamcity.keyvault.agent.KeyVaultBuildFeature" autowire="constructor"/>
 
 </beans>

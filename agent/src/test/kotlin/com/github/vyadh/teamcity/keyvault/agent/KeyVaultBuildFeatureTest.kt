@@ -22,7 +22,7 @@ internal class KeyVaultBuildFeatureTest {
     @Suppress("UNCHECKED_CAST")
     val dispatcher = Mockito.mock(EventDispatcher::class.java) as EventDispatcher<AgentLifeCycleListener>
 
-    val feature = KeyVaultBuildFeature(dispatcher)
+    val feature = KeyVaultBuildFeature(dispatcher, connector())
 
     verify(dispatcher).addListener(feature)
   }

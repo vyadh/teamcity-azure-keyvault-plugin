@@ -14,7 +14,7 @@ import java.util.stream.Stream
 
 class KeyVaultBuildFeature(
       dispatcher: EventDispatcher<AgentLifeCycleListener>,
-      private val connector: KeyVaultConnector = AzureKeyVaultConnector())
+      private val connector: KeyVaultConnector)
   : AgentLifeCycleAdapter() {
 
   companion object {

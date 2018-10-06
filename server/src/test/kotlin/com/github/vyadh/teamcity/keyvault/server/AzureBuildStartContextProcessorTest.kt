@@ -2,9 +2,11 @@ package com.github.vyadh.teamcity.keyvault.server
 
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants.ACCESS_TOKEN_PROPERTY
+import com.github.vyadh.teamcity.keyvault.common.KeyVaultException
 import com.github.vyadh.teamcity.keyvault.common.TokenRequestSettings
 import com.github.vyadh.teamcity.keyvault.server.BuildContexts.buildContextWith
 import com.github.vyadh.teamcity.keyvault.server.BuildContexts.buildContextWithParams
+import com.github.vyadh.teamcity.keyvault.server.BuildContexts.buildContextWithRelevantParams
 import com.github.vyadh.teamcity.keyvault.server.BuildContexts.featureDescriptor
 import com.github.vyadh.teamcity.keyvault.server.BuildContexts.featureParams
 import com.github.vyadh.teamcity.keyvault.server.BuildContexts.featureParamsWith
@@ -75,6 +77,19 @@ internal class AzureBuildStartContextProcessorTest {
 
     verify(connector).requestToken(TokenRequestSettings.fromMap(featureParams))
     verify(context).addSharedParameter(ACCESS_TOKEN_PROPERTY, "provide-secret-token")
+  }
+
+  @Test
+  internal fun reportBuildProblemWhenFailedToFetchToken() {
+    val connector = mock(TokenConnector::class.java)
+    `when`(connector.requestToken(any()))
+          .thenThrow(KeyVaultException("Something went wrong"))
+    val processor = AzureBuildStartContextProcessor(connector)
+    val context = buildContextWithRelevantParams()
+
+    processor.updateParameters(context)
+
+    verify(context.build).addBuildProblem(any())
   }
 
   private fun tokenConnectorWithResponse(accessToken: String): TokenConnector {

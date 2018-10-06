@@ -2,10 +2,12 @@ package com.github.vyadh.teamcity.keyvault.agent
 
 import com.github.vyadh.teamcity.keyvault.agent.KotlinMockitoMatchers.any
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants
+import com.github.vyadh.teamcity.keyvault.common.KeyVaultException
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultRef
 import jetbrains.buildServer.agent.AgentLifeCycleListener
 import jetbrains.buildServer.agent.AgentRunningBuild
 import jetbrains.buildServer.agent.BuildParametersMap
+import jetbrains.buildServer.agent.BuildProgressLogger
 import jetbrains.buildServer.util.EventDispatcher
 import jetbrains.buildServer.util.PasswordReplacer
 import org.assertj.core.api.Assertions.assertThat
@@ -131,6 +133,22 @@ internal class KeyVaultBuildFeatureTest {
     verify(build).addSharedConfigParameter("keyvault:vault/keyC", "secretC")
   }
 
+  @Test
+  internal fun reportBuildErrorWhenFailedToFetchSecret() {
+    val connector = Mockito.mock(KeyVaultConnector::class.java)
+    `when`(connector.requestValue(any(), any()))
+          .thenThrow(KeyVaultException("Something went wrong"))
+    val build = build(buildParams = mapOf("param-name" to " %keyvault:vault/secret-name% "))
+
+    buildFeature(connector).buildStarted(build)
+
+    verify(build.buildLogger).internalError(
+          eq(KeyVaultConstants.FEATURE_TYPE),
+          eq("Error processing parameters for Azure Key Vault: Something went wrong"),
+          any()
+    )
+  }
+
   @Suppress("UNCHECKED_CAST")
   private fun buildFeature(connector: KeyVaultConnector = connector())
         : KeyVaultBuildFeature {
@@ -155,6 +173,9 @@ internal class KeyVaultBuildFeatureTest {
     `when`(build.sharedConfigParameters).thenReturn(configAndTokenParams)
 
     `when`(build.passwordReplacer).thenReturn(passwordReplacer)
+
+    val buildLogger = Mockito.mock(BuildProgressLogger::class.java)
+    `when`(build.buildLogger).thenReturn(buildLogger)
 
     return build
   }

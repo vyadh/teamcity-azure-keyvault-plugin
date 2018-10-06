@@ -28,11 +28,19 @@ class KeyVaultBuildFeature(
   }
 
   override fun buildStarted(build: AgentRunningBuild) {
-    val token = consumeToken(build)
-    val refs = allReferences(build)
-    val secretByRef = fetchSecrets(refs, token)
-    obfuscatePasswords(secretByRef, build)
-    populateBuildSecrets(secretByRef, build)
+    try {
+      val token = consumeToken(build)
+      val refs = allReferences(build)
+      val secretByRef = fetchSecrets(refs, token)
+      obfuscatePasswords(secretByRef, build)
+      populateBuildSecrets(secretByRef, build)
+    } catch (e: Exception) {
+      build.buildLogger.internalError(
+            KeyVaultConstants.FEATURE_TYPE,
+            "Error processing parameters for Azure Key Vault: ${e.message}",
+            e
+      )
+    }
   }
 
   private fun consumeToken(build: AgentRunningBuild): String? {

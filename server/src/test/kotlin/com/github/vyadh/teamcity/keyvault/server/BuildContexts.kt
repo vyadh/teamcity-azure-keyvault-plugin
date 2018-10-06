@@ -9,13 +9,6 @@ import org.mockito.Mockito
 
 object BuildContexts {
 
-  internal fun buildContextWithParams(params: Map<String, String>): BuildStartContext {
-    val descriptor = featureDescriptor(featureParams())
-    val paramsProvider = parametersProvider(params)
-
-    return buildContextWith(descriptor, paramsProvider)
-  }
-
   internal fun featureDescriptor(featureParams: Map<String, String>): SProjectFeatureDescriptor {
     val descriptor = Mockito.mock(SProjectFeatureDescriptor::class.java)
     Mockito.`when`(descriptor.parameters).thenReturn(featureParams)
@@ -42,6 +35,20 @@ object BuildContexts {
     val params = HashMap(featureParams())
     params[pair.first] = pair.second
     return params
+  }
+
+  internal fun buildContextWithRelevantParams(): BuildStartContext {
+    val params = mapOf(
+          "example-key" to "some relevant %keyvault:secret%"
+    )
+    return buildContextWithParams(params)
+  }
+
+  internal fun buildContextWithParams(params: Map<String, String>): BuildStartContext {
+    val descriptor = featureDescriptor(featureParams())
+    val paramsProvider = parametersProvider(params)
+
+    return buildContextWith(descriptor, paramsProvider)
   }
 
   internal fun buildContextWith(

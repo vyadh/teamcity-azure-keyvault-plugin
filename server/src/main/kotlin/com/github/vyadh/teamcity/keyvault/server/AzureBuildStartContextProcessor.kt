@@ -4,6 +4,7 @@ import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants
 import com.github.vyadh.teamcity.keyvault.common.TokenRequestSettings
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultRefs
 import com.intellij.openapi.diagnostic.Logger
+import jetbrains.buildServer.BuildProblemData
 import jetbrains.buildServer.log.Loggers
 import jetbrains.buildServer.serverSide.BuildStartContext
 import jetbrains.buildServer.serverSide.BuildStartContextProcessor
@@ -35,12 +36,26 @@ class AzureBuildStartContextProcessor(
         feature: SProjectFeatureDescriptor, context: BuildStartContext) {
 
     val settings = TokenRequestSettings.fromMap(feature.parameters)
-    //todo error handling
-    val token = connector.requestToken(settings)
 
-    context.addSharedParameter(
-          KeyVaultConstants.ACCESS_TOKEN_PROPERTY,
-          token.accessToken)
+    try {
+      val token = connector.requestToken(settings)
+
+      context.addSharedParameter(
+            KeyVaultConstants.ACCESS_TOKEN_PROPERTY,
+            token.accessToken)
+    } catch (e: Throwable) {
+      reportError("Error fetching Azure access token: ${e.message}", e, context.build)
+    }
+  }
+
+  private fun reportError(message: String, e: Throwable, build: SRunningBuild) {
+    LOG.warn(message, e)
+    build.addBuildProblem(
+          BuildProblemData.createBuildProblem(
+                "KV_${build.buildTypeId}",
+                "AzureBuildStartContextProcessor",
+                message + ": " + e.toString() + ", see teamcity-server.log for details"
+          ))
   }
 
   private fun findKeyVaultFeature(context: BuildStartContext): SProjectFeatureDescriptor? {

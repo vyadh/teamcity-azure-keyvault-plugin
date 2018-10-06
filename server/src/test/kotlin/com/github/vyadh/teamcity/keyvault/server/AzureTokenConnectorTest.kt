@@ -1,9 +1,11 @@
 package com.github.vyadh.teamcity.keyvault.server
 
+import com.github.vyadh.teamcity.keyvault.common.KeyVaultException
 import com.github.vyadh.teamcity.keyvault.common.TokenRequestSettings
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -47,7 +49,17 @@ class AzureTokenConnectorTest {
     assertThat(response.accessToken).isEqualTo(accessToken)
   }
 
-  //todo test possible error responses
+  @Test
+  internal fun submittedRequestWithErrorResponse() {
+    val connector = AzureTokenConnector(baseUrl())
+    server.enqueue(MockResponse().setResponseCode(404))
+
+    val throwable = catchThrowable { connector.requestToken(settings) }
+
+    assertThat(throwable)
+          .isInstanceOf(KeyVaultException::class.java)
+          .hasMessageContaining("Could not fetch Azure token, received response code 404")
+  }
 
   private fun baseUrl() = server.url("/").toString()
 

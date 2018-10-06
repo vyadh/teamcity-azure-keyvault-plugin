@@ -1,9 +1,10 @@
 package com.github.vyadh.teamcity.keyvault.agent
 
+import com.github.vyadh.teamcity.keyvault.common.KeyVaultException
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultRef
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
-import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -39,6 +40,20 @@ class AzureKeyVaultConnectorTest {
   }
 
   @Test
+  internal fun submittedRequestWithErrorResponse() {
+    val connector = AzureKeyVaultConnector(baseUrl())
+    val ref = KeyVaultRef("keyvault:instance/name")
+    val accessToken = "access-token"
+
+    server.enqueue(MockResponse().setResponseCode(404))
+    val throwable = catchThrowable { connector.requestValue(ref, accessToken) }
+
+    assertThat(throwable)
+          .isInstanceOf(KeyVaultException::class.java)
+          .hasMessageContaining("Could not fetch secret, received response code 404")
+  }
+
+  @Test
   internal fun extractedResponse() {
     val connector = AzureKeyVaultConnector(baseUrl())
     val ref = KeyVaultRef("keyvault:instance/name")
@@ -49,8 +64,6 @@ class AzureKeyVaultConnectorTest {
 
     assertThat(response.value).isEqualTo(secretValue)
   }
-
-  //todo test possible error responses
 
   private fun baseUrl() = server.url("/$(instance)").toString()
 

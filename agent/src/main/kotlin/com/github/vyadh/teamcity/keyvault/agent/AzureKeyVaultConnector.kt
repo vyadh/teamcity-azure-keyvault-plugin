@@ -1,5 +1,6 @@
 package com.github.vyadh.teamcity.keyvault.agent
 
+import com.github.vyadh.teamcity.keyvault.common.KeyVaultException
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultRef
 import com.squareup.moshi.Moshi
 import okhttp3.OkHttpClient
@@ -27,20 +28,25 @@ class AzureKeyVaultConnector(
     return executeRequest(request)
   }
 
-  //todo dup
+  //todo dup AzureTokenConnector
   private fun executeRequest(request: Request): SecretResponse {
     val moshi = Moshi.Builder().build()
     val adapter = moshi.adapter(SecretResponse::class.java)
 
-    val result = client.newCall(request).execute().use { response ->
-      val body = response.body()!!.source()
-      adapter.fromJson(body)
+    val token = client.newCall(request).execute().use { response ->
+      if (response.isSuccessful) {
+        val body = response.body()!!.source()
+        adapter.fromJson(body)
+      } else {
+        throw KeyVaultException("Could not fetch secret, received " +
+              "response code ${response.code()} for url: ${request.url()}")
+      }
     }
 
-    if (result == null) {
-      throw IllegalArgumentException("Could not fetch token")
+    if (token == null) {
+      throw KeyVaultException("Could not fetch secret")
     } else {
-      return result
+      return token
     }
   }
 

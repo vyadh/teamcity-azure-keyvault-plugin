@@ -61,7 +61,7 @@ class KeyVaultBuildFeature(
 
   private fun fetchSecrets(refs: Stream<KeyVaultRef>, token: String?): Map<KeyVaultRef, String> {
     if (token == null) {
-      //todo log
+      LOG.warn("Could not fetch access token")
       return emptyMap()
     }
 

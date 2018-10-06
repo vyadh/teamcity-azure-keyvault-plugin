@@ -1,5 +1,6 @@
 package com.github.vyadh.teamcity.keyvault.server
 
+import com.github.vyadh.teamcity.keyvault.common.KeyVaultException
 import com.github.vyadh.teamcity.keyvault.common.TokenRequestSettings
 import com.squareup.moshi.Moshi
 import okhttp3.FormBody
@@ -38,12 +39,17 @@ class AzureTokenConnector(
     val adapter = moshi.adapter(TokenResponse::class.java)
 
     val token = client.newCall(request).execute().use { response ->
-      val body = response.body()!!.source()
-      adapter.fromJson(body)
+      if (response.isSuccessful) {
+        val body = response.body()!!.source()
+        adapter.fromJson(body)
+      } else {
+        throw KeyVaultException("Could not fetch Azure token, received " +
+              "response code ${response.code()} for url: ${request.url()}")
+      }
     }
 
     if (token == null) {
-      throw IllegalArgumentException("Could not fetch token")
+      throw KeyVaultException("Could not fetch Azure token")
     } else {
       return token
     }

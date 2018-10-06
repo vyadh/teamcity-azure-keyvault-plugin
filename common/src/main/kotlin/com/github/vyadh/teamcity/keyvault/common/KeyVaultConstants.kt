@@ -8,7 +8,7 @@ object KeyVaultConstants {
   val ACCESS_TOKEN_PROPERTY = "teamcity.keyvault.access_token"
 
   /** Users specify this special variable prefix to obtain KV secrets.
-   *  For example: %keyvault:<vault ref>/path% todo finalise format */
+   *  For example: %keyvault:<vault ref>/path% */
   @JvmField val VAR_PREFIX = "keyvault:"
 
   /** Allows associating the KV TeamCity feature with the corresponding params. */

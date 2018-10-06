@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/vyadh/teamcity-azure-keyvault-plugin.svg?branch=master)](https://travis-ci.org/vyadh/teamcity-azure-keyvault-plugin)
 
 Azure Key Vault TeamCity Plugin
 ===============================

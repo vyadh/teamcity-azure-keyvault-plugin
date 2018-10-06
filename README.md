@@ -17,6 +17,8 @@ head start to development.
 Getting Started
 ---------------
 
+(Section a work-in-progress)
+
 1. Install plugin.
 2. Add Azure Key Vault feature to required project as a new 'connection'.
    The required secrets will then be populated on all build configurations
@@ -68,7 +70,7 @@ Azure Key Vault Limitations
 Azure Key Vault is currently a limited-functionality service. The following
 describes some of the challenges, and how the plugin tries to mitigate them.
 
-**No real RBAC (Roll Based Access Control).** Access control is applied at the
+**No real RBAC (Role-Based Access Control).** Access control is applied at the
 vault level, so multiple Key Vaults are required in order to control access
 between secrets. To make this more manageable in the plugin, the specific
 vault required is specified as part of the path to the secret.

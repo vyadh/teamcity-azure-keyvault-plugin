@@ -10,6 +10,8 @@ as beta software.
 
 Many thanks to JetBrains for their [Hashicorp Vault plugin][1] which provided
 a lot of guidance on how to accomplish similar functionality with Azure Key Vault.
+Also thanks to RodM for the [TeamCity Gradle Plugin][2] which provided a great
+head start to development.
 
 
 Getting Started
@@ -94,3 +96,4 @@ Also known as 'not currently supported'.
 
 
 [1]: https://github.com/JetBrains/teamcity-hashicorp-vault-plugin
+[2]: https://github.com/rodm/gradle-teamcity-plugin

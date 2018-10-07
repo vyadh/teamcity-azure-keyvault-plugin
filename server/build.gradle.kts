@@ -70,8 +70,8 @@ teamcity {
 
     "teamcity2018" {
       version = "2018.1.2"
-      serverOptions("-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5600 -DTC.res.disableAll=true -Dteamcity.development.mode=true")
-      agentOptions("-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5601")
+      serverOptions("-DTC.res.disableAll=true -Dteamcity.development.mode=true")
+      agentOptions()
     }
 
     "teamcity2018Debug" {

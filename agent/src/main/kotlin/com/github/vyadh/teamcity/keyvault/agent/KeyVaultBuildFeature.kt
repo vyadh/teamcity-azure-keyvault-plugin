@@ -9,6 +9,7 @@ import jetbrains.buildServer.agent.AgentLifeCycleListener
 import jetbrains.buildServer.agent.AgentRunningBuild
 import jetbrains.buildServer.log.Loggers
 import jetbrains.buildServer.util.EventDispatcher
+import jetbrains.buildServer.util.StringUtil
 import java.util.stream.Collectors
 import java.util.stream.Stream
 
@@ -86,7 +87,8 @@ class KeyVaultBuildFeature(
   }
 
   private fun populateBuildSecrets(secretsByRef: Map<KeyVaultRef, String>, build: AgentRunningBuild) {
-    build.buildLogger.message("Retrieved ${secretsByRef.size} secrets from Azure Key Vault")
+    val items = StringUtil.pluralize("secret", secretsByRef.size)
+    build.buildLogger.message("Retrieved ${secretsByRef.size} $items from Azure Key Vault")
 
     for ((ref, secret) in secretsByRef) {
       build.addSharedConfigParameter(ref.ref, secret)

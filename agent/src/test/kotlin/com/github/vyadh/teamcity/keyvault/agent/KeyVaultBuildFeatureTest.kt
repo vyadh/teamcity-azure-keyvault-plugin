@@ -4,10 +4,7 @@ import com.github.vyadh.teamcity.keyvault.agent.KotlinMockitoMatchers.any
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultException
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultRef
-import jetbrains.buildServer.agent.AgentLifeCycleListener
-import jetbrains.buildServer.agent.AgentRunningBuild
-import jetbrains.buildServer.agent.BuildParametersMap
-import jetbrains.buildServer.agent.BuildProgressLogger
+import jetbrains.buildServer.agent.*
 import jetbrains.buildServer.util.EventDispatcher
 import jetbrains.buildServer.util.PasswordReplacer
 import org.assertj.core.api.Assertions.assertThat
@@ -37,7 +34,7 @@ internal class KeyVaultBuildFeatureTest {
     feature.buildStarted(build)
 
     verify(build).addSharedConfigParameter(
-          KeyVaultConstants.ACCESS_TOKEN_PROPERTY, "(redacted)")
+          KeyVaultConstants.ACCESS_TOKEN_PROPERTY, "*** (redacted)")
   }
 
   @Test

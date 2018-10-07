@@ -7,10 +7,12 @@ import com.intellij.openapi.diagnostic.Logger
 import jetbrains.buildServer.agent.AgentLifeCycleAdapter
 import jetbrains.buildServer.agent.AgentLifeCycleListener
 import jetbrains.buildServer.agent.AgentRunningBuild
+import jetbrains.buildServer.agent.BuildFinishedStatus
 import jetbrains.buildServer.log.Loggers
 import jetbrains.buildServer.util.EventDispatcher
 import jetbrains.buildServer.util.StringUtil
 import java.util.stream.Collectors
+import java.util.stream.Collectors.toList
 import java.util.stream.Stream
 
 class KeyVaultBuildFeature(
@@ -56,7 +58,7 @@ class KeyVaultBuildFeature(
     build.passwordReplacer.addPassword(token)
 
     // Do not allow using the token directly (for now)
-    build.addSharedConfigParameter(KeyVaultConstants.ACCESS_TOKEN_PROPERTY, "(redacted)")
+    build.addSharedConfigParameter(KeyVaultConstants.ACCESS_TOKEN_PROPERTY, "*** (redacted)")
 
     return token
   }

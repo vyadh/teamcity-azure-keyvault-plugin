@@ -46,8 +46,10 @@ class KeyVaultBuildFeature(
   private fun consumeToken(build: AgentRunningBuild): String? {
     val token = build.sharedConfigParameters[KeyVaultConstants.ACCESS_TOKEN_PROPERTY]
     if (token == null || token.isNullOrBlank()) {
+      LOG.debug("No token available/required for Azure Key Vault")
       return null
     }
+    build.buildLogger.message("Retrieved access token for Azure Key Vault")
 
     // Hide token from shown properties and build logs
     build.passwordReplacer.addPassword(token)
@@ -84,6 +86,8 @@ class KeyVaultBuildFeature(
   }
 
   private fun populateBuildSecrets(secretsByRef: Map<KeyVaultRef, String>, build: AgentRunningBuild) {
+    build.buildLogger.message("Retrieved ${secretsByRef.size} secrets from Azure Key Vault")
+
     for ((ref, secret) in secretsByRef) {
       build.addSharedConfigParameter(ref.ref, secret)
     }

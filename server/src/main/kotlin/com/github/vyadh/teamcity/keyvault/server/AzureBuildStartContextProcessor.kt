@@ -21,14 +21,20 @@ class AzureBuildStartContextProcessor(
           Loggers.SERVER_CATEGORY + "." + AzureBuildStartContextProcessor::class.java.name)!!
   }
 
+  init {
+    LOG.info("Azure Key Vault integration enabled for fetching access tokens")
+  }
+
   override fun updateParameters(context: BuildStartContext) {
     val feature = findKeyVaultFeature(context)
     if (feature != null) {
       if (requiresAccessToken(feature, context.build)) {
         updateParametersWithToken(feature, context)
+      } else {
+        LOG.debug("No key vault variables found for for build ${context.build}")
       }
     } else {
-      LOG.debug("No key vault token required for build ${context.build}")
+      LOG.debug("No key vault feature enabled for build ${context.build}")
     }
   }
 
@@ -39,6 +45,8 @@ class AzureBuildStartContextProcessor(
 
     try {
       val token = connector.requestToken(settings)
+
+      LOG.debug("Fetch Azure AD token for Key Vault")
 
       context.addSharedParameter(
             KeyVaultConstants.ACCESS_TOKEN_PROPERTY,

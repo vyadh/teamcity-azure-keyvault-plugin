@@ -4,15 +4,14 @@ import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultRef
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultRefs
 import com.intellij.openapi.diagnostic.Logger
+import jetbrains.buildServer.BuildProblemData
 import jetbrains.buildServer.agent.AgentLifeCycleAdapter
 import jetbrains.buildServer.agent.AgentLifeCycleListener
 import jetbrains.buildServer.agent.AgentRunningBuild
-import jetbrains.buildServer.agent.BuildFinishedStatus
 import jetbrains.buildServer.log.Loggers
 import jetbrains.buildServer.util.EventDispatcher
 import jetbrains.buildServer.util.StringUtil
 import java.util.stream.Collectors
-import java.util.stream.Collectors.toList
 import java.util.stream.Stream
 
 class KeyVaultBuildFeature(
@@ -42,6 +41,12 @@ class KeyVaultBuildFeature(
             KeyVaultConstants.FEATURE_TYPE,
             "Error processing parameters for Azure Key Vault: ${e.message}",
             e
+      )
+      BuildProblemData.createBuildProblem(
+            "KVA_${build.buildTypeId}",
+            "KeyVaultBuildFeature",
+            "Error processing parameters for Azure Key Vault: ${e.message}," +
+                  " see teamcity-server.log for details"
       )
     }
   }
@@ -74,7 +79,7 @@ class KeyVaultBuildFeature(
 
   private fun fetchSecrets(refs: Stream<KeyVaultRef>, token: String?): Map<KeyVaultRef, String> {
     if (token == null) {
-      LOG.warn("Could not fetch access token")
+      LOG.warn("Could not fetch Azure AD access token")
       return emptyMap()
     }
 

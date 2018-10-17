@@ -60,7 +60,7 @@ class AzureBuildStartContextProcessor(
     LOG.warn(message, e)
     build.addBuildProblem(
           BuildProblemData.createBuildProblem(
-                "KV_${build.buildTypeId}",
+                "KVS_${build.buildTypeId}",
                 "AzureBuildStartContextProcessor",
                 message + ": " + e.toString() + ", see teamcity-server.log for details"
           ))

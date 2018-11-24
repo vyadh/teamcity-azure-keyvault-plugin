@@ -38,6 +38,29 @@ class AzureBuildStartContextProcessor(
     }
   }
 
+  private fun findKeyVaultFeature(context: BuildStartContext): SProjectFeatureDescriptor? {
+    val project = context.build.buildType?.project
+
+    return project
+          ?.getAvailableFeaturesOfType(OAuthConstants.FEATURE_TYPE)
+          ?.firstOrNull { isKeyVaultType(it) }
+  }
+
+  private fun isKeyVaultType(it: SProjectFeatureDescriptor) =
+        it.parameters[OAuthConstants.OAUTH_TYPE_PARAM] == KeyVaultConstants.FEATURE_TYPE
+
+  private fun requiresAccessToken(
+        feature: SProjectFeatureDescriptor, build: SRunningBuild): Boolean {
+
+    return containsProvideTokenParam(feature) ||
+          KeyVaultRefs.containsRef(build.parametersProvider.all)
+  }
+
+  private fun containsProvideTokenParam(feature: SProjectFeatureDescriptor): Boolean {
+    val override = feature.parameters[KeyVaultConstants.PROVIDE_TOKEN_PROPERTY]
+    return override?.toBoolean() ?: false
+  }
+
   private fun updateParametersWithToken(
         feature: SProjectFeatureDescriptor, context: BuildStartContext) {
 
@@ -64,29 +87,6 @@ class AzureBuildStartContextProcessor(
                 "AzureBuildStartContextProcessor",
                 message + ": " + e.toString() + ", see teamcity-server.log for details"
           ))
-  }
-
-  private fun findKeyVaultFeature(context: BuildStartContext): SProjectFeatureDescriptor? {
-    val project = context.build.buildType?.project
-
-    return project
-          ?.getAvailableFeaturesOfType(OAuthConstants.FEATURE_TYPE)
-          ?.firstOrNull { isKeyVaultType(it) }
-  }
-
-  private fun isKeyVaultType(it: SProjectFeatureDescriptor) =
-        it.parameters[OAuthConstants.OAUTH_TYPE_PARAM] == KeyVaultConstants.FEATURE_TYPE
-
-  private fun requiresAccessToken(
-        feature: SProjectFeatureDescriptor, build: SRunningBuild): Boolean {
-
-    return containsProvideTokenParam(feature) ||
-          KeyVaultRefs.containsRef(build.parametersProvider.all)
-  }
-
-  private fun containsProvideTokenParam(feature: SProjectFeatureDescriptor): Boolean {
-    val override = feature.parameters[KeyVaultConstants.PROVIDE_TOKEN_PROPERTY]
-    return override?.toBoolean() ?: false
   }
 
 }

@@ -89,6 +89,23 @@ limited time in memory to fetch the secrets and is not accessible from build
 steps.
 
 
+Azure Service Principal Configuration Tips
+------------------------------------------
+
+To limit the impact of a compromised Azure service principal used for the Key
+Vault plugin, ensure it is configured to only access the required vaults with
+no access to other resources.
+
+To mitigate access to secrets if the service principal is exposed, ensure it
+has an access policy limited to the 'Get' operation on each vault. This will
+ensure secret names cannot be listed and therefore slightly more difficult for
+an attacker to access the secret values.
+
+Store keys and certificates in separate key vault instances to the ones used
+for automation secrets in TeamCity. While this can be controlled by RBAC in
+Azure it is better to use a service principal dedicated to automation secrets.
+
+
 Possible Future Features
 ------------------------
 

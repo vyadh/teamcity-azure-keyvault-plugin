@@ -63,7 +63,7 @@ class KeyVaultBuildFeature(
     build.passwordReplacer.addPassword(token)
 
     // Do not allow using the token directly (for now)
-    build.addSharedConfigParameter(KeyVaultConstants.ACCESS_TOKEN_PROPERTY, "*** (redacted)")
+    build.addSharedConfigParameter(KeyVaultConstants.ACCESS_TOKEN_PROPERTY, "********")
 
     return token
   }

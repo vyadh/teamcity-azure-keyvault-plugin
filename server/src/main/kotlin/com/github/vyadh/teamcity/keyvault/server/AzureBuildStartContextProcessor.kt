@@ -67,9 +67,8 @@ class AzureBuildStartContextProcessor(
     val settings = TokenRequestSettings.fromMap(feature.parameters)
 
     try {
-      val token = connector.requestToken(settings)
-
       LOG.debug("Fetch Azure AD token for Key Vault")
+      val token = connector.requestToken(settings)
 
       context.addSharedParameter(
             KeyVaultConstants.ACCESS_TOKEN_PROPERTY,

@@ -34,7 +34,7 @@ internal class KeyVaultBuildFeatureTest {
     feature.buildStarted(build)
 
     verify(build).addSharedConfigParameter(
-          KeyVaultConstants.ACCESS_TOKEN_PROPERTY, "*** (redacted)")
+          KeyVaultConstants.ACCESS_TOKEN_PROPERTY, "********")
   }
 
   @Test

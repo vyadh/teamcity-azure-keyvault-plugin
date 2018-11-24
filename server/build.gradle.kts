@@ -26,6 +26,7 @@ dependencies {
 
   compileOnly("org.jetbrains.teamcity.internal:web:${rootProject.extra["teamcityVersion"]}")
   testCompile("org.jetbrains.teamcity.internal:web:${rootProject.extra["teamcityVersion"]}")
+  compileOnly("org.jetbrains.teamcity.internal:server:${rootProject.extra["teamcityVersion"]}")
 
   compile("com.squareup.okhttp3:okhttp:3.11.0")
   testImplementation("com.squareup.okhttp3:mockwebserver:3.11.0")
@@ -44,12 +45,12 @@ teamcity {
 
   server {
     descriptor {
-      name = "Azure KeyVault TeamCity Plugin"
-      displayName = "Azure KeyVault TeamCity Plugin"
+      name = "Azure Key Vault TeamCity Plugin"
+      displayName = "Azure Key Vault TeamCity Plugin"
       version = rootProject.version as String?
       vendorName = "Kieron Wilkinson"
       vendorUrl = "https://github.com/vyadh"
-      description = "Azure AD and KeyVault TeamCity Plugin"
+      description = "Azure AD and Key Vault TeamCity Plugin"
       email = "kieron.wilkinson@gmail.com"
       useSeparateClassloader = true
     }

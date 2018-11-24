@@ -41,7 +41,7 @@ class KeyVaultAgentIntegrationTest {
     server.enqueue(MockResponse().setBody(secretResponse("vault2", "keyB", "secretB")))
     feature.buildStarted(build)
 
-    verify(build).addSharedConfigParameter("teamcity.keyvault.access_token", "*** (redacted)")
+    verify(build).addSharedConfigParameter("teamcity.azurekeyvault.access_token", "*** (redacted)")
     verify(build).addSharedConfigParameter("keyvault:vault1/keyA", "secretA")
     verify(build).addSharedConfigParameter("keyvault:vault2/keyB", "secretB")
   }

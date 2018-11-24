@@ -57,6 +57,10 @@ object BuildContexts {
 
     val build = buildWith(featureDescriptor, paramsProvider)
 
+    return buildContextWith(build)
+  }
+
+  internal fun buildContextWith(build: SRunningBuild): BuildStartContext {
     val context = Mockito.mock(BuildStartContext::class.java)
     Mockito.`when`(context.build).thenReturn(build)
     return context
@@ -66,9 +70,16 @@ object BuildContexts {
         featureDescriptor: SProjectFeatureDescriptor,
         paramsProvider: ParametersProvider): SRunningBuild {
 
+    return buildWith(listOf(featureDescriptor), paramsProvider)
+  }
+
+  internal fun buildWith(
+        featureDescriptors: List<SProjectFeatureDescriptor>,
+        paramsProvider: ParametersProvider): SRunningBuild {
+
     val project = Mockito.mock(SProject::class.java)
     Mockito.`when`(project.getAvailableFeaturesOfType(OAuthConstants.FEATURE_TYPE))
-          .thenReturn(listOf(featureDescriptor))
+          .thenReturn(featureDescriptors.toList())
 
     val buildType = Mockito.mock(SBuildType::class.java)
     Mockito.`when`(buildType.project).thenReturn(project)

@@ -7,6 +7,7 @@ import com.github.vyadh.teamcity.keyvault.common.TokenRequestSettings
 import com.github.vyadh.teamcity.keyvault.server.BuildContexts.buildContextWith
 import com.github.vyadh.teamcity.keyvault.server.BuildContexts.buildContextWithParams
 import com.github.vyadh.teamcity.keyvault.server.BuildContexts.buildContextWithRelevantParams
+import com.github.vyadh.teamcity.keyvault.server.BuildContexts.buildWith
 import com.github.vyadh.teamcity.keyvault.server.BuildContexts.featureDescriptor
 import com.github.vyadh.teamcity.keyvault.server.BuildContexts.featureParams
 import com.github.vyadh.teamcity.keyvault.server.BuildContexts.featureParamsWith
@@ -52,6 +53,25 @@ internal class AzureBuildStartContextProcessorTest {
           "key" to "some relevant %keyvault:secret% message"
     )
     val context = buildContextWithParams(params)
+    val connector = tokenConnectorWithResponse("param-secret-token")
+    val processor = AzureBuildStartContextProcessor(connector)
+
+    processor.updateParameters(context)
+
+    verify(connector).requestToken(TokenRequestSettings.fromMap(featureParams()))
+    verify(context).addSharedParameter(ACCESS_TOKEN_PROPERTY, "param-secret-token")
+  }
+
+  @Test
+  fun tokenRequestedWhenMultipleFeatureDescriptors() {
+    val params = mapOf(
+          "key" to "some relevant %keyvault:secret% message"
+    )
+    val descriptors = listOf(
+          featureDescriptor(mapOf(OAuthConstants.OAUTH_TYPE_PARAM to "other type")),
+          featureDescriptor(featureParams())
+    )
+    val context = buildContextWith(buildWith(descriptors, parametersProvider(params)))
     val connector = tokenConnectorWithResponse("param-secret-token")
     val processor = AzureBuildStartContextProcessor(connector)
 

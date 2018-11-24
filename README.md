@@ -46,16 +46,16 @@ How the plugin works...
 -----------------------
 
 1. When a build is triggered on the TeamCity server, the plugin requests an
-   access token from Azure AD limited to the Key Vault resource. This allows
+   access token from Azure AD, limited to the Key Vault resource. This allows
    fetching secrets from any vault within the tenant that the configured
    service principal has access to.
    
-2. The access token is encoded as a build parameter 'password' to send it to
+2. The access token is encoded as a build parameter 'password' and provided to
    build agents.
 
-3. When a build starts on the agent, and before any steps are executed, the
+3. When a build starts on an agent and before any steps are executed, the
    access token is read into memory and then removed so not accessible from
-   build steps themselves.
+   the build steps themselves.
    
 4. References to Key Vault secrets in build parameters are used to query the
    respective Key Vaults concerned.
@@ -71,17 +71,22 @@ Azure Key Vault Limitations
 Azure Key Vault is currently a limited-functionality service. The following
 describes some of the challenges, and how the plugin tries to mitigate them.
 
-**No real RBAC (Role-Based Access Control).** Access control is applied at the
-vault level, so multiple Key Vaults are required in order to control access
-between secrets. To make this more manageable in the plugin, the specific
-vault required is specified as part of the path to the secret.
+**No real RBAC (Role-Based Access Control) in Azure Key Vault.** Access control
+is applied at the vault level, so multiple Key Vaults are required in order to
+control access between secrets. To make this more manageable in the plugin, the
+specific vault required is specified as part of the path to the secret.
 
-**Lack of token revocation features and one-time use tokens from Azure AD.**
-The access token from Azure AD lasts for an hour by default and this
-validity period cannot be changed from the requesting entity. It can also be
+**Limited access token validity functionality in Azure AD.** The access token
+from Azure AD lasts for an hour by default and this validity period cannot be
+changed from the requesting entity. Tasks that run only for a few seconds
+cannot indicate they only need a token valid for a couple of minutes they will
+always receive the configured default.
+ 
+**No support for one-time use tokens from Azure AD.** The access token can be
 used many times. To mitigate this risk, the plugin removes the token from the
-build parameters sent to an agent before the build starts (being kept in memory
-to fetch secrets) and is not accessible from build steps.
+build parameters sent to an agent before the build starts. It is used for a
+limited time in memory to fetch the secrets and is not accessible from build
+steps.
 
 
 Possible Future Features
@@ -89,13 +94,22 @@ Possible Future Features
 
 Also known as 'not currently supported'.
 
-* Azure Managed Identity support for requesting access tokens.
-* Support getting keys and certificates as well as secrets.
-* Storing the connector service principal credentials (client secret) in OS
-  keyring rather than as a TeamCity secret.
+* Support TeamCity proxy configuration parameters.
+* Support accessing Key Vault instances from separate Azure service principals.
+  While one vault 'connection' in TeamCity can access multiple Key Vault
+  instances, sometimes it's useful to have better access control within TeamCity.
+  For example adding a root-level Key Vault connection with general secrets
+  that are accessed by multiple teams, and then team-specific connections placed
+  further down the TeamCity project hierarchy that has access to segregated
+  secrets only permitted to that team.
 * An option or separate connector to allow using the Azure AD token in
-  build steps.
-
+  build steps directly.
+* Azure Managed Identity support for requesting access tokens. This would
+  have to be configurable so that the TeamCity Server can still be run
+  on-premise (useful for cloud environment bootstrap).
+* Storing the connector service principal credentials (client secret) in OS
+  keyring rather than as a TeamCity secret. Probably best implemented as a
+  separate plugin.
 
 
 [1]: https://github.com/JetBrains/teamcity-hashicorp-vault-plugin

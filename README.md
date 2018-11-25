@@ -42,6 +42,11 @@ parameters:
 Where `<vault>` is the name of the required Key Vault, the same name used in
 the normal Key Vault URL `https://<vault name>.vault.azure.net`.
 
+In order to limit the performance impact of the plugin, references can only
+be defined in parameters (config, system or environment variables) and not
+directly in scripts. Once a references is specified in a parameter, it can be
+accessed from scripts as usual.
+
 
 How the plugin works...
 -----------------------

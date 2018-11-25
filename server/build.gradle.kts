@@ -10,8 +10,8 @@ apply {
   plugin("com.github.rodm.teamcity-server")
 }
 
-extra["downloadsDir"] = project.findProperty("downloads.dir") ?: "${rootDir}/downloads"
-extra["serversDir"] = project.findProperty("servers.dir") ?: "${rootDir}/servers"
+extra["downloadsDir"] = project.findProperty("downloads.dir") ?: "$rootDir/downloads"
+extra["serversDir"] = project.findProperty("servers.dir") ?: "$rootDir/servers"
 
 val agent = configurations.getByName("agent")
 
@@ -61,15 +61,11 @@ teamcity {
   environments {
     downloadsDir = extra["downloadsDir"] as String
     baseHomeDir = extra["serversDir"] as String
-    baseDataDir = "${rootDir}/data"
+    baseDataDir = "$rootDir/data"
 
     operator fun String.invoke(block: TeamCityEnvironment.() -> Unit) {
-      environments.create(this, closureOf<TeamCityEnvironment>(block))
+      environments.create(this, closureOf(block))
     }
-
-//    "teamcity2017" {
-//      version = "2017.1"
-//    }
 
     "teamcity2018" {
       version = "2018.1.2"

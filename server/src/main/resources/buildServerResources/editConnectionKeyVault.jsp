@@ -50,7 +50,6 @@
     <props:textProperty name="${keys.RESOURCE_URI}" className="longField textProperty_max-width js_max-width"/>
     <span class="error" id="error_${keys.RESOURCE_URI}"/>
     <span class="smallNote">The Azure resource we are requesting the access token for.
-      Leave as default to access any Key Vault, or change to get a token for other
-      resources (an Azure resource URI or App URI).</span>
+      Leave as the default to allow access to Key Vault resources.</span>
   </td>
 </tr>

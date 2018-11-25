@@ -9,7 +9,7 @@ import jetbrains.buildServer.serverSide.oauth.OAuthConstants
 import jetbrains.buildServer.serverSide.parameters.types.PasswordsProvider
 import jetbrains.buildServer.util.StringUtil
 
-class AzureAccessTokenPasswordProvider : PasswordsProvider {
+class AzureConnectionPasswordProvider : PasswordsProvider {
 
   override fun getPasswordParameters(build: SBuild): MutableCollection<Parameter> {
     val secret = findSecret(build)

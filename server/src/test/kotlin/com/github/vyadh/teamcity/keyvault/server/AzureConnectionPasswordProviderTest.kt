@@ -10,13 +10,13 @@ import jetbrains.buildServer.serverSide.oauth.OAuthConstants
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class AzureAccessTokenPasswordProviderTest {
+internal class AzureConnectionPasswordProviderTest {
 
   @Test
-  fun accessTokenIsAddedToPasswordProvider() {
+  fun connectionSecretIsAddedToPasswordProvider() {
     val secret = "service-principal-password"
     val build = buildWithSecret(secret)
-    val passwordProvider = AzureAccessTokenPasswordProvider()
+    val passwordProvider = AzureConnectionPasswordProvider()
 
     val results = passwordProvider.getPasswordParameters(build)
 
@@ -27,10 +27,10 @@ internal class AzureAccessTokenPasswordProviderTest {
   }
 
   @Test
-  fun accessTokenIsNotAddedToPasswordProviderWhenEmpty() {
+  fun connectionSecretIsNotAddedToPasswordProviderWhenEmpty() {
     val secret = "  "
     val build = buildWithSecret(secret)
-    val passwordProvider = AzureAccessTokenPasswordProvider()
+    val passwordProvider = AzureConnectionPasswordProvider()
 
     val results = passwordProvider.getPasswordParameters(build)
 
@@ -38,14 +38,14 @@ internal class AzureAccessTokenPasswordProviderTest {
   }
 
   @Test
-  fun accessTokenIsAddedToPasswordProviderWhenMultipleFeatureDescriptors() {
+  fun connectionSecretIsAddedToPasswordProviderWhenMultipleFeatureDescriptors() {
     val secret = "service-principal-password"
     val descriptors = listOf(
           featureDescriptor(mapOf(OAuthConstants.OAUTH_TYPE_PARAM to "other type")),
           descriptorWithSecret(secret)
     )
     val build = buildWith(descriptors, parametersProvider(mapOf()))
-    val passwordProvider = AzureAccessTokenPasswordProvider()
+    val passwordProvider = AzureConnectionPasswordProvider()
 
     val results = passwordProvider.getPasswordParameters(build)
 

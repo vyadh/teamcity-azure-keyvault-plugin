@@ -6,6 +6,6 @@
 
   <bean class="com.github.vyadh.teamcity.keyvault.server.AzureConnectionProvider"/>
   <bean class="com.github.vyadh.teamcity.keyvault.server.AzureBuildStartContextProcessor"/>
-  <bean class="com.github.vyadh.teamcity.keyvault.server.AzureAccessTokenPasswordProvider"/>
+  <bean class="com.github.vyadh.teamcity.keyvault.server.AzureConnectionPasswordProvider"/>
 
 </beans>

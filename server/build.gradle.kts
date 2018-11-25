@@ -47,12 +47,12 @@ teamcity {
 
   server {
     descriptor {
-      name = "Azure Key Vault TeamCity Plugin"
-      displayName = "Azure Key Vault TeamCity Plugin"
+      name = "Azure Key Vault Support"
+      displayName = "Azure Key Vault Support"
       version = rootProject.version as String?
       vendorName = "Kieron Wilkinson"
       vendorUrl = "https://github.com/vyadh"
-      description = "Azure AD and Key Vault TeamCity Plugin"
+      description = "Azure Key Vault Plugin for TeamCity"
       email = "kieron.wilkinson@gmail.com"
       useSeparateClassloader = true
     }

@@ -6,11 +6,11 @@ Azure Key Vault TeamCity Plugin
 A plugin to TeamCity (>= 2018.1) to integrate with Azure Key Vault to make
 managing secrets in TeamCity easier and more secure.
 
-**Important:** While this plugin is functional, it very new and best described
-as beta software.
-
 Many thanks to JetBrains for their [Hashicorp Vault plugin][1] which provided
 a lot of guidance on how to accomplish similar functionality with Azure Key Vault.
+While this plugin was written from scratch, it would have been far more difficult
+to implement without it.
+
 Also thanks to RodM for the [TeamCity Gradle Plugin][2] which provided a great
 head start to development.
 
@@ -18,13 +18,13 @@ head start to development.
 Getting Started
 ---------------
 
-(Section a work-in-progress)
-
-1. Install plugin.
-2. Add Azure Key Vault feature to required project as a new 'connection'.
-   The required secrets will then be populated on all build configurations
-   in that project and below.
-3. Define paths to secrets within the required build parameters.
+1. Install plugin from the [TeamCity plugin repository][3].
+2. The Azure Key Vault plugin is installed as a TeamCity 'connection'.
+   Go to the administrator screen for the desired project, then to 'Connections'.
+3. Add a connection, specify Azure Key Vault, and fill in the fields as described.
+4. Click Save. This connection will be available for all build configurations
+   in this project and below.
+3. Define paths to secrets within the build parameters as required.
    See format below.
 
 
@@ -112,12 +112,13 @@ Possible Future Features
 Also known as 'not currently supported'.
 
 * Support TeamCity proxy configuration parameters.
-* Support accessing Key Vault instances from separate Azure service principals.
+* Support accessing Key Vault instances with separate Azure service principals.
   While one vault 'connection' in TeamCity can access multiple Key Vault
-  instances, sometimes it's useful to have better access control within TeamCity.
+  instances, sometimes it's useful to have more flexible access control within
+  TeamCity itself.
   For example adding a root-level Key Vault connection with general secrets
   that are accessed by multiple teams, and then team-specific connections placed
-  further down the TeamCity project hierarchy that has access to segregated
+  further down the TeamCity project hierarchy that have access to segregated
   secrets only permitted to that team.
 * An option or separate connector to allow using the Azure AD token in
   build steps directly.
@@ -131,3 +132,4 @@ Also known as 'not currently supported'.
 
 [1]: https://github.com/JetBrains/teamcity-hashicorp-vault-plugin
 [2]: https://github.com/rodm/gradle-teamcity-plugin
+[3]: https://plugins.jetbrains.com/teamcity

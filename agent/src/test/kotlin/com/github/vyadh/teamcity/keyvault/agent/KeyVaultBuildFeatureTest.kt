@@ -1,16 +1,14 @@
 package com.github.vyadh.teamcity.keyvault.agent
 
-import com.github.vyadh.teamcity.keyvault.agent.KotlinMockitoMatchers.any
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultException
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultRef
+import com.nhaarman.mockitokotlin2.*
 import jetbrains.buildServer.agent.*
 import jetbrains.buildServer.util.EventDispatcher
 import jetbrains.buildServer.util.PasswordReplacer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
-import org.mockito.Mockito.*
 
 internal class KeyVaultBuildFeatureTest {
 
@@ -18,8 +16,7 @@ internal class KeyVaultBuildFeatureTest {
 
   @Test
   internal fun alwaysActivatePlugin() {
-    @Suppress("UNCHECKED_CAST")
-    val dispatcher = Mockito.mock(EventDispatcher::class.java) as EventDispatcher<AgentLifeCycleListener>
+    val dispatcher: EventDispatcher<AgentLifeCycleListener> = mock()
 
     val feature = KeyVaultBuildFeature(dispatcher, connector())
 
@@ -40,9 +37,9 @@ internal class KeyVaultBuildFeatureTest {
   @Test
   internal fun tokenShouldBeObfuscated() {
     val feature = buildFeature()
+    val passwordReplacer: PasswordReplacer = mock()
     val build = build()
-    val passwordReplacer = Mockito.mock(PasswordReplacer::class.java)
-    `when`(build.passwordReplacer).thenReturn(passwordReplacer)
+    whenever(build.passwordReplacer).thenReturn(passwordReplacer)
 
     feature.buildStarted(build)
 
@@ -99,7 +96,7 @@ internal class KeyVaultBuildFeatureTest {
           "usage-b" to " %keyvault:vaultB/keyB1% ",
           "usage-c" to " %keyvault:vaultB/keyB2% "
     )
-    val passwords = Mockito.mock(PasswordReplacer::class.java)
+    val passwords: PasswordReplacer = mock()
     val build = build(buildParams = configRef, passwordReplacer = passwords)
 
     buildFeature(connector).buildStarted(build)
@@ -132,9 +129,12 @@ internal class KeyVaultBuildFeatureTest {
 
   @Test
   internal fun reportBuildErrorWhenFailedToFetchSecret() {
-    val connector = Mockito.mock(KeyVaultConnector::class.java)
-    `when`(connector.requestValue(any(), any()))
+    val connector: KeyVaultConnector = mock()
+    whenever(connector.requestValue(any(), any()))
           .thenThrow(KeyVaultException("Something went wrong"))
+//    val connector: KeyVaultConnector = mock {
+//      on { it.requestValue(any(), any()) }.doThrow(KeyVaultException("Something went wrong"))
+//    }
     val build = build(buildParams = mapOf("param-name" to " %keyvault:vault/secret-name% "))
 
     buildFeature(connector).buildStarted(build)
@@ -146,49 +146,45 @@ internal class KeyVaultBuildFeatureTest {
     )
   }
 
-  @Suppress("UNCHECKED_CAST")
-  private fun buildFeature(connector: KeyVaultConnector = connector())
-        : KeyVaultBuildFeature {
-    val dispatcher = Mockito.mock(EventDispatcher::class.java) as EventDispatcher<AgentLifeCycleListener>
+  private fun buildFeature(connector: KeyVaultConnector = connector()): KeyVaultBuildFeature {
+    val dispatcher: EventDispatcher<AgentLifeCycleListener> = mock() 
     return KeyVaultBuildFeature(dispatcher, connector)
   }
 
   private fun build(
         configParams: Map<String, String> = emptyMap(),
         buildParams: Map<String, String> = emptyMap(),
-        passwordReplacer: PasswordReplacer = Mockito.mock(PasswordReplacer::class.java)
+        passwordReplacer: PasswordReplacer = mock()
   ): AgentRunningBuild {
 
     val configAndTokenParams = configParams
           .plus(KeyVaultConstants.ACCESS_TOKEN_PROPERTY to accessToken)
 
-    val paramMap = Mockito.mock(BuildParametersMap::class.java)
-    `when`(paramMap.allParameters).thenReturn(buildParams)
+    val paramMap: BuildParametersMap = mock {
+      on { allParameters }.doReturn(buildParams)
+    }
 
-    val build = Mockito.mock(AgentRunningBuild::class.java)
-    `when`(build.sharedBuildParameters).thenReturn(paramMap)
-    `when`(build.sharedConfigParameters).thenReturn(configAndTokenParams)
+    val buildLogger: BuildProgressLogger = mock()
 
-    `when`(build.passwordReplacer).thenReturn(passwordReplacer)
-
-    val buildLogger = Mockito.mock(BuildProgressLogger::class.java)
-    `when`(build.buildLogger).thenReturn(buildLogger)
-
-    return build
+    return mock {
+      on { it.sharedBuildParameters }.doReturn(paramMap)
+      on { it.sharedConfigParameters }.doReturn(configAndTokenParams)
+      on { it.passwordReplacer }.doReturn(passwordReplacer)
+      on { it.buildLogger }.doReturn(buildLogger)
+    }
   }
 
   private fun connector(): KeyVaultConnector {
-    val connector = Mockito.mock(KeyVaultConnector::class.java)
-    `when`(connector.requestValue(any(), any()))
-          .thenReturn(SecretResponse(""))
-    return connector
+    return mock {
+      on { requestValue(any(), any()) }.doReturn(SecretResponse(""))
+    }
   }
 
   private fun connector(vararg pairs: Pair<String, String>): KeyVaultConnector {
-    val connector = Mockito.mock(KeyVaultConnector::class.java)
+    val connector: KeyVaultConnector = mock()
     for (pair in pairs) {
       val (ref, secret) = pair
-      `when`(connector.requestValue(KeyVaultRef(ref), accessToken))
+      whenever(connector.requestValue(KeyVaultRef(ref), accessToken))
             .thenReturn(SecretResponse(secret))
     }
     return connector

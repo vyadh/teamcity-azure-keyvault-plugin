@@ -1,6 +1,9 @@
 package com.github.vyadh.teamcity.keyvault.agent
 
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
 import jetbrains.buildServer.agent.AgentLifeCycleListener
 import jetbrains.buildServer.agent.AgentRunningBuild
 import jetbrains.buildServer.agent.BuildParametersMap
@@ -12,7 +15,6 @@ import okhttp3.mockwebserver.MockWebServer
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.*
 
 class KeyVaultAgentIntegrationTest {
 
@@ -56,26 +58,24 @@ class KeyVaultAgentIntegrationTest {
     val configAndTokenParams = configParams
           .plus(KeyVaultConstants.ACCESS_TOKEN_PROPERTY to "access-token")
 
-    val paramMap = mock(BuildParametersMap::class.java)
-    `when`(paramMap.allParameters).thenReturn(buildParams)
+    val paramMap: BuildParametersMap = mock {
+      on { allParameters }.doReturn(buildParams)
+    }
 
-    // Unfortunately there doesn't seem to be one of these we can use
-    val build = mock(AgentRunningBuild::class.java)
-    `when`(build.sharedBuildParameters).thenReturn(paramMap)
-    `when`(build.sharedConfigParameters).thenReturn(configAndTokenParams)
+    val passwordReplacer: PasswordReplacer = mock()
+    val buildLogger: BuildProgressLogger = mock()
 
-    val passwordReplacer = mock(PasswordReplacer::class.java)
-    `when`(build.passwordReplacer).thenReturn(passwordReplacer)
-
-    val buildLogger = mock(BuildProgressLogger::class.java)
-    `when`(build.buildLogger).thenReturn(buildLogger)
-
-    return build
+    // Unfortunately there doesn't seem to be a TeamCity agent build implementation class we can use
+    return mock {
+      on { it.sharedBuildParameters }.doReturn(paramMap)
+      on { it.sharedConfigParameters }.doReturn<Map<String, String>>(configAndTokenParams)
+      on { it.passwordReplacer }.doReturn(passwordReplacer)
+      on { it.buildLogger }.doReturn(buildLogger)
+    }
   }
 
-  @Suppress("UNCHECKED_CAST")
   private fun buildFeature(connector: KeyVaultConnector): KeyVaultBuildFeature {
-    val dispatcher = mock(EventDispatcher::class.java) as EventDispatcher<AgentLifeCycleListener>
+    val dispatcher: EventDispatcher<AgentLifeCycleListener> = mock()
     return KeyVaultBuildFeature(dispatcher, connector)
   }
 

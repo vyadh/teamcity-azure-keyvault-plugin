@@ -24,7 +24,7 @@ dependencies {
   testCompile("org.junit.jupiter:junit-jupiter-params:5.3.1")
   testRuntime("org.junit.jupiter:junit-jupiter-engine:5.3.1")
   testRuntime("org.junit.jupiter:junit-jupiter-engine:5.3.1")
-  testCompile("org.mockito:mockito-all:1.9.5")
+  testCompile("com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0")
 }
 
 configure<TeamCityPluginExtension> {

@@ -12,20 +12,18 @@ import com.github.vyadh.teamcity.keyvault.server.BuildContexts.featureDescriptor
 import com.github.vyadh.teamcity.keyvault.server.BuildContexts.featureParams
 import com.github.vyadh.teamcity.keyvault.server.BuildContexts.featureParamsWith
 import com.github.vyadh.teamcity.keyvault.server.BuildContexts.parametersProvider
-import com.github.vyadh.teamcity.keyvault.server.KotlinMockitoMatchers.any
+import com.nhaarman.mockitokotlin2.*
 import jetbrains.buildServer.parameters.ParametersProvider
 import jetbrains.buildServer.serverSide.BuildStartContext
 import jetbrains.buildServer.serverSide.oauth.OAuthConstants
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
-import org.mockito.Mockito.*
 
 internal class AzureBuildStartContextProcessorTest {
 
   @Test
   fun tokenNotRequestedBuildDoesNotHaveKeyVaultFeature() {
     val context = buildContextWithIrrelevantOAuthFeature()
-    val connector = mock(TokenConnector::class.java)
+    val connector: TokenConnector = mock()
     val processor = AzureBuildStartContextProcessor(connector)
 
     processor.updateParameters(context)
@@ -39,7 +37,7 @@ internal class AzureBuildStartContextProcessorTest {
           "key" to "some irrelevant %other:secret% message"
     )
     val context = buildContextWithParams(params)
-    val connector = mock(TokenConnector::class.java)
+    val connector: TokenConnector = mock()
     val processor = AzureBuildStartContextProcessor(connector)
 
     processor.updateParameters(context)
@@ -101,9 +99,9 @@ internal class AzureBuildStartContextProcessorTest {
 
   @Test
   internal fun reportBuildProblemWhenFailedToFetchToken() {
-    val connector = mock(TokenConnector::class.java)
-    `when`(connector.requestToken(any()))
-          .thenThrow(KeyVaultException("Something went wrong"))
+    val connector: TokenConnector = mock {
+      on { requestToken(any()) }.doThrow(KeyVaultException("Something went wrong"))
+    }
     val processor = AzureBuildStartContextProcessor(connector)
     val context = buildContextWithRelevantParams()
 
@@ -113,8 +111,9 @@ internal class AzureBuildStartContextProcessorTest {
   }
 
   private fun tokenConnectorWithResponse(accessToken: String): TokenConnector {
-    val connector = mock(TokenConnector::class.java)
-    `when`(connector.requestToken(any())).thenReturn(TokenResponse(accessToken))
+    val connector: TokenConnector = mock {
+      on { requestToken(any()) }.doReturn(TokenResponse(accessToken))
+    }
     return connector
   }
 
@@ -122,8 +121,9 @@ internal class AzureBuildStartContextProcessorTest {
     val params = mapOf(OAuthConstants.OAUTH_TYPE_PARAM to "irrelevant")
     val descriptor = featureDescriptor(params)
 
-    val paramsProvider = Mockito.mock(ParametersProvider::class.java)
-    Mockito.`when`(paramsProvider.all).thenReturn(emptyMap())
+    val paramsProvider: ParametersProvider = mock {
+      on { all }.doReturn(emptyMap())
+    }
 
     return BuildContexts.buildContextWith(descriptor, paramsProvider)
   }

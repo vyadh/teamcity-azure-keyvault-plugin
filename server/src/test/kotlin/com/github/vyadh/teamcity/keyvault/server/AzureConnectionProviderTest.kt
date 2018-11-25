@@ -1,11 +1,11 @@
 package com.github.vyadh.teamcity.keyvault.server
 
 import com.github.vyadh.teamcity.keyvault.common.AzureTokenConstants
+import com.nhaarman.mockitokotlin2.mock
 import jetbrains.buildServer.serverSide.PropertiesProcessor
 import jetbrains.buildServer.web.openapi.PluginDescriptor
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
 
 class AzureConnectionProviderTest {
 
@@ -42,7 +42,8 @@ class AzureConnectionProviderTest {
   }
 
   private fun propertiesProcessor(): PropertiesProcessor {
-    val provider = AzureConnectionProvider(Mockito.mock(PluginDescriptor::class.java))
+    val descriptor: PluginDescriptor = mock()
+    val provider = AzureConnectionProvider(descriptor)
     return provider.propertiesProcessor
   }
 

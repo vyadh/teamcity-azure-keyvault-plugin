@@ -38,6 +38,16 @@ internal class AzureConnectionPasswordProviderTest {
   }
 
   @Test
+  fun buildIsIgnoredWhenProviderNotConfigured() {
+    val build = buildWith(featureDescriptor(mapOf()), parametersProvider(mapOf()))
+    val passwordProvider = AzureConnectionPasswordProvider()
+
+    val results = passwordProvider.getPasswordParameters(build)
+
+    assertThat(results).isEmpty()
+  }
+
+  @Test
   fun connectionSecretIsAddedToPasswordProviderWhenMultipleFeatureDescriptors() {
     val secret = "service-principal-password"
     val descriptors = listOf(

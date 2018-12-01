@@ -25,7 +25,7 @@ class AzureConnectionPasswordProvider : PasswordsProvider {
     return build.buildType
           ?.project
           ?.getAvailableFeaturesOfType(OAuthConstants.FEATURE_TYPE)
-          ?.first { it.parameters[OAuthConstants.OAUTH_TYPE_PARAM] == KeyVaultConstants.FEATURE_TYPE }
+          ?.firstOrNull { it.parameters[OAuthConstants.OAUTH_TYPE_PARAM] == KeyVaultConstants.FEATURE_TYPE }
           ?.parameters
           ?.get(AzureTokenConstants.CLIENT_SECRET)
   }

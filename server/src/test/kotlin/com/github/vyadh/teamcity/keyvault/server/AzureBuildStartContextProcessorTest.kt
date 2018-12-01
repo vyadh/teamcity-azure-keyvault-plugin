@@ -111,10 +111,9 @@ internal class AzureBuildStartContextProcessorTest {
   }
 
   private fun tokenConnectorWithResponse(accessToken: String): TokenConnector {
-    val connector: TokenConnector = mock {
+    return mock {
       on { requestToken(any()) }.doReturn(TokenResponse(accessToken))
     }
-    return connector
   }
 
   private fun buildContextWithIrrelevantOAuthFeature(): BuildStartContext {

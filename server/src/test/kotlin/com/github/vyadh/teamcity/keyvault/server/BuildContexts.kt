@@ -2,23 +2,24 @@ package com.github.vyadh.teamcity.keyvault.server
 
 import com.github.vyadh.teamcity.keyvault.common.AzureTokenConstants
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
 import jetbrains.buildServer.parameters.ParametersProvider
 import jetbrains.buildServer.serverSide.*
 import jetbrains.buildServer.serverSide.oauth.OAuthConstants
-import org.mockito.Mockito
 
 object BuildContexts {
 
   internal fun featureDescriptor(featureParams: Map<String, String>): SProjectFeatureDescriptor {
-    val descriptor = Mockito.mock(SProjectFeatureDescriptor::class.java)
-    Mockito.`when`(descriptor.parameters).thenReturn(featureParams)
-    return descriptor
+    return mock {
+      on { parameters }.doReturn(featureParams)
+    }
   }
 
   internal fun parametersProvider(params: Map<String, String>): ParametersProvider {
-    val paramsProvider = Mockito.mock(ParametersProvider::class.java)
-    Mockito.`when`(paramsProvider.all).thenReturn(params)
-    return paramsProvider
+    return mock {
+      on { all }.doReturn(params)
+    }
   }
 
   internal fun featureParams(): Map<String, String> {
@@ -61,9 +62,9 @@ object BuildContexts {
   }
 
   internal fun buildContextWith(build: SRunningBuild): BuildStartContext {
-    val context = Mockito.mock(BuildStartContext::class.java)
-    Mockito.`when`(context.build).thenReturn(build)
-    return context
+    return mock {
+      on { this.build }.doReturn(build)
+    }
   }
 
   internal fun buildWith(
@@ -75,19 +76,20 @@ object BuildContexts {
 
   internal fun buildWith(
         featureDescriptors: List<SProjectFeatureDescriptor>,
-        paramsProvider: ParametersProvider): SRunningBuild {
+        parametersProvider: ParametersProvider): SRunningBuild {
 
-    val project = Mockito.mock(SProject::class.java)
-    Mockito.`when`(project.getAvailableFeaturesOfType(OAuthConstants.FEATURE_TYPE))
-          .thenReturn(featureDescriptors.toList())
+    val project: SProject = mock {
+      on { getAvailableFeaturesOfType(OAuthConstants.FEATURE_TYPE) }.doReturn(featureDescriptors.toList())
+    }
 
-    val buildType = Mockito.mock(SBuildType::class.java)
-    Mockito.`when`(buildType.project).thenReturn(project)
+    val buildType: SBuildType = mock {
+      on { this.project }.doReturn(project)
+    }
 
-    val build = Mockito.mock(SRunningBuild::class.java)
-    Mockito.`when`(build.parametersProvider).thenReturn(paramsProvider)
-    Mockito.`when`(build.buildType).thenReturn(buildType)
-    return build
+    return mock {
+      on { this.parametersProvider }.doReturn(parametersProvider)
+      on { this.buildType }.doReturn(buildType)
+    }
   }
 
 }

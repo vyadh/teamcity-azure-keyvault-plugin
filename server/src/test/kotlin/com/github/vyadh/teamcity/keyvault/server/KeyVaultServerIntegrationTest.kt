@@ -3,6 +3,7 @@ package com.github.vyadh.teamcity.keyvault.server
 import com.github.vyadh.teamcity.keyvault.common.KeyVaultConstants
 import com.github.vyadh.teamcity.keyvault.common.TokenRequestSettings
 import com.github.vyadh.teamcity.keyvault.server.BuildContexts.buildWith
+import com.nhaarman.mockitokotlin2.mock
 import jetbrains.buildServer.parameters.impl.MapParametersProviderImpl
 import jetbrains.buildServer.serverSide.BuildStartContext
 import jetbrains.buildServer.serverSide.RunTypesProvider
@@ -15,7 +16,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
 
 class KeyVaultServerIntegrationTest {
 
@@ -64,7 +64,7 @@ class KeyVaultServerIntegrationTest {
 
   private fun buildContext(): BuildStartContext {
     val build = buildWith(featureDescriptor(), parametersProvider())
-    val runTypesProvider = Mockito.mock(RunTypesProvider::class.java)
+    val runTypesProvider: RunTypesProvider = mock()
     val parameters = HashMap<String, String>()
     // Using real TeamCity objects where possible for integration test
     return BuildStartContextImpl(runTypesProvider, build, parameters)

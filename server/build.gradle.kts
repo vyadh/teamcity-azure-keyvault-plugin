@@ -55,6 +55,7 @@ teamcity {
       description = "Azure Key Vault Plugin for TeamCity"
       email = "kieron.wilkinson@gmail.com"
       useSeparateClassloader = true
+      minimumBuild = "58245"
     }
   }
 

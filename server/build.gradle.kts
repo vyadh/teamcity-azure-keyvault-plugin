@@ -32,8 +32,8 @@ dependencies {
   compileOnly("org.jetbrains.teamcity:oauth:${rootProject.extra["teamcityVersion"]}")
   testCompile("org.jetbrains.teamcity:oauth:${rootProject.extra["teamcityVersion"]}")
 
-  compile("com.squareup.okhttp3:okhttp:3.11.0")
-  testImplementation("com.squareup.okhttp3:mockwebserver:3.11.0")
+  compile("com.squareup.okhttp3:okhttp:3.14.0")
+  testImplementation("com.squareup.okhttp3:mockwebserver:3.14.0")
 
   compile("com.squareup.moshi:moshi:1.8.0")
   compileOnly("com.squareup.moshi:moshi-kotlin-codegen:1.8.0")

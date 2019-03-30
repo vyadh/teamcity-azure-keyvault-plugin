@@ -40,9 +40,9 @@ dependencies {
   kapt("com.squareup.moshi:moshi-kotlin-codegen:1.8.0")
 
   testCompile("org.assertj:assertj-core:3.11.1")
-  testCompile("org.junit.jupiter:junit-jupiter-api:5.3.1")
-  testCompile("org.junit.jupiter:junit-jupiter-params:5.3.1")
-  testRuntime("org.junit.jupiter:junit-jupiter-engine:5.3.1")
+  testCompile("org.junit.jupiter:junit-jupiter-api:5.4.1")
+  testCompile("org.junit.jupiter:junit-jupiter-params:5.4.1")
+  testRuntime("org.junit.jupiter:junit-jupiter-engine:5.4.1")
   testCompile("com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0")
 }
 

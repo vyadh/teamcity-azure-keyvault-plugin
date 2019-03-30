@@ -5,7 +5,7 @@
        default-autowire="constructor">
 
   <bean class="com.github.vyadh.teamcity.keyvault.server.AzureConnectionProvider"/>
-  <bean class="com.github.vyadh.teamcity.keyvault.server.AzureBuildStartContextProcessor"/>
+  <bean class="com.github.vyadh.teamcity.keyvault.server.AzureBuildStartContextProcessor" scope="singleton"/>
   <bean class="com.github.vyadh.teamcity.keyvault.server.AzureConnectionPasswordProvider"/>
 
 </beans>

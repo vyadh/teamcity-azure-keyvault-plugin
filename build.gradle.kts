@@ -5,7 +5,7 @@ buildscript {
   }
 
   dependencies {
-    classpath("com.github.rodm:gradle-teamcity-plugin:1.1.1")
+    classpath("com.github.rodm:gradle-teamcity-plugin:1.2")
   }
 }
 

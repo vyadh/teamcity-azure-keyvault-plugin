@@ -1,5 +1,6 @@
 import com.github.rodm.teamcity.TeamCityEnvironment
 import com.github.rodm.teamcity.TeamCityPluginExtension
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   kotlin("jvm")
@@ -8,6 +9,7 @@ plugins {
 
 apply {
   plugin("com.github.rodm.teamcity-server")
+  plugin("com.github.rodm.teamcity-environments")
 }
 
 extra["downloadsDir"] = project.findProperty("downloads.dir") ?: "$rootDir/downloads"
@@ -16,8 +18,8 @@ extra["serversDir"] = project.findProperty("servers.dir") ?: "$rootDir/servers"
 val agent = configurations.getByName("agent")
 
 repositories {
-  mavenLocal()
   mavenCentral()
+  maven(url = "http://download.jetbrains.com/teamcity-repository")
 }
 
 dependencies {
@@ -27,6 +29,8 @@ dependencies {
   compileOnly("org.jetbrains.teamcity.internal:web:${rootProject.extra["teamcityVersion"]}")
   testCompile("org.jetbrains.teamcity.internal:web:${rootProject.extra["teamcityVersion"]}")
   compileOnly("org.jetbrains.teamcity.internal:server:${rootProject.extra["teamcityVersion"]}")
+  compileOnly("org.jetbrains.teamcity:oauth:${rootProject.extra["teamcityVersion"]}")
+  testCompile("org.jetbrains.teamcity:oauth:${rootProject.extra["teamcityVersion"]}")
 
   compile("com.squareup.okhttp3:okhttp:3.11.0")
   testImplementation("com.squareup.okhttp3:mockwebserver:3.11.0")
@@ -69,13 +73,13 @@ teamcity {
     }
 
     "teamcity2018" {
-      version = "2018.1.2"
+      version = "2018.2.3"
       serverOptions("-DTC.res.disableAll=true -Dteamcity.development.mode=true")
       agentOptions()
     }
 
     "teamcity2018Debug" {
-      version = "2018.1.2"
+      version = "2018.2.3"
       serverOptions("-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5600 -DTC.res.disableAll=true -Dteamcity.development.mode=true")
       agentOptions("-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5601")
     }
@@ -85,4 +89,13 @@ teamcity {
 // Extension function to allow cleaner configuration
 fun Project.teamcity(configuration: TeamCityPluginExtension.() -> Unit) {
   configure(configuration)
+}
+
+val compileKotlin: KotlinCompile by tasks
+compileKotlin.kotlinOptions {
+  jvmTarget = "1.8"
+}
+val compileTestKotlin: KotlinCompile by tasks
+compileTestKotlin.kotlinOptions {
+  jvmTarget = "1.8"
 }

@@ -5,13 +5,21 @@ import com.github.vyadh.teamcity.keyvault.common.KeyVaultRef
 import com.squareup.moshi.Moshi
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.time.Duration
 
 class AzureKeyVaultConnector(
       private val baseUrl: String = defaultBaseUrl) : KeyVaultConnector {
 
   companion object {
     const val defaultBaseUrl = "https://$(instance).vault.azure.net"
-    val client = OkHttpClient()
+    val client = createHttpClient()
+
+    private fun createHttpClient(): OkHttpClient {
+      return OkHttpClient().newBuilder()
+            .connectTimeout(Duration.ofSeconds(30))
+            .readTimeout(Duration.ofSeconds(30))
+            .build()
+    }
   }
 
   override fun requestValue(ref: KeyVaultRef, accessToken: String): SecretResponse {

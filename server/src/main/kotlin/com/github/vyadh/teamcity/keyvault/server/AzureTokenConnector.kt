@@ -40,11 +40,11 @@ class AzureTokenConnector(
 
     val token = client.newCall(request).execute().use { response ->
       if (response.isSuccessful) {
-        val body = response.body()!!.source()
+        val body = response.body!!.source()
         adapter.fromJson(body)
       } else {
         throw KeyVaultException("Could not fetch Azure token, received " +
-              "response code ${response.code()} for url: ${request.url()}")
+              "response code ${response.code} for url: ${request.url}")
       }
     }
 

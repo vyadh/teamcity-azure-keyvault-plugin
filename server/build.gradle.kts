@@ -32,18 +32,18 @@ dependencies {
   compileOnly("org.jetbrains.teamcity:oauth:${rootProject.extra["teamcityVersion"]}")
   testCompile("org.jetbrains.teamcity:oauth:${rootProject.extra["teamcityVersion"]}")
 
-  compile("com.squareup.okhttp3:okhttp:3.14.0")
-  testImplementation("com.squareup.okhttp3:mockwebserver:3.14.0")
+  compile("com.squareup.okhttp3:okhttp:4.4.1")
+  testImplementation("com.squareup.okhttp3:mockwebserver:4.4.1")
 
-  compile("com.squareup.moshi:moshi:1.8.0")
-  compileOnly("com.squareup.moshi:moshi-kotlin-codegen:1.8.0")
-  kapt("com.squareup.moshi:moshi-kotlin-codegen:1.8.0")
+  compile("com.squareup.moshi:moshi:1.9.1")
+  compileOnly("com.squareup.moshi:moshi-kotlin-codegen:1.9.1")
+  kapt("com.squareup.moshi:moshi-kotlin-codegen:1.9.1")
 
-  testCompile("org.assertj:assertj-core:3.11.1")
-  testCompile("org.junit.jupiter:junit-jupiter-api:5.4.1")
-  testCompile("org.junit.jupiter:junit-jupiter-params:5.4.1")
-  testRuntime("org.junit.jupiter:junit-jupiter-engine:5.4.1")
-  testCompile("com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0")
+  testCompile("org.assertj:assertj-core:3.15.0")
+  testCompile("org.junit.jupiter:junit-jupiter-api:5.6.0")
+  testCompile("org.junit.jupiter:junit-jupiter-params:5.6.0")
+  testRuntime("org.junit.jupiter:junit-jupiter-engine:5.6.0")
+  testCompile("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
 }
 
 teamcity {

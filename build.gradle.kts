@@ -5,12 +5,12 @@ buildscript {
   }
 
   dependencies {
-    classpath("com.github.rodm:gradle-teamcity-plugin:1.2")
+    classpath("com.github.rodm:gradle-teamcity-plugin:1.2.2")
   }
 }
 
 plugins {
-  kotlin("jvm") version "1.2.71" apply false
+  kotlin("jvm") version "1.3.70" apply false
 }
 
 group = "com.github.vyadh.teamcity"

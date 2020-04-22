@@ -98,7 +98,8 @@ class KeyVaultBuildFeature(
     build.buildLogger.message("Retrieved ${secretsByRef.size} $items from Azure Key Vault")
 
     for ((ref, secret) in secretsByRef) {
-      build.addSharedConfigParameter(ref.ref, secret)
+      var escapedSecret = secret.replace("%", "%%") //replace teamcity variable character with escaped symbol.
+      build.addSharedConfigParameter(ref.ref, escapedSecret)
     }
   }
 
